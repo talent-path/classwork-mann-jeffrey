@@ -1,6 +1,12 @@
 public class TicTacToe {
     public static void main(String[] args) {
-        play();
+        int numGames = getNumberOfGames();
+        while (numGames > 0) {
+            play();
+            reset();
+            numGames--;
+        }
+        Console.print(String.format("Wins: %d\nLosses: %d\nDraws: %d", wins, losses, draws));
     }
 
     public static int[][] board = {
@@ -9,14 +15,30 @@ public class TicTacToe {
             {0, 0, 0}
     };
 
-    private static boolean isFinished = false;
+    public static boolean isFinished = false;
+
+    public static int wins = 0;
+    public static int losses = 0;
+    public static int draws = 0;
+
+    public static void reset() {
+        Console.print("New Game!");
+
+        board = new int[][] {
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0}
+        };
+        isFinished = false;
+    }
 
     public static void play() {
         printBoard();
         while (!isFinished) {
             getUserChoice();
+            if (isFinished) break;
             getComputerChoice();
-            isFinished = checkTie();
+            if (isFinished) break;
         }
     }
 
@@ -24,7 +46,8 @@ public class TicTacToe {
         for (int i = 0; i < board.length * board.length; i++) {
             int row = i / board.length;
             int col = i % board.length;
-            System.out.print(board[row][col] + " ");
+            String boardToken = board[row][col] == 0 ? "-" : (board[row][col] == 1 ? "X" : "O");
+            System.out.print(boardToken + " ");
             if (i % board.length == board.length - 1) System.out.println();
         }
     }
@@ -36,10 +59,13 @@ public class TicTacToe {
             board[userRow - 1][userCol - 1] = 1;
             printBoard();
             isFinished = gameOver(1, userRow - 1, userCol - 1);
-            if (isFinished) Console.print("You won!");
+            if (isFinished) {
+                wins++;
+                Console.print("You won!");
+            }
         } else {
-            Console.print("You have already picked that location!");
-            getUserChoice();
+            isFinished = checkTie();
+            if (!isFinished) getUserChoice();
         }
     }
 
@@ -52,19 +78,26 @@ public class TicTacToe {
             board[compRow][compCol] = 2;
             printBoard();
             isFinished = gameOver(2, compRow, compCol);
-            if (isFinished) Console.print("Computer has won!");
+            if (isFinished) {
+                losses++;
+                Console.print("Computer has won!");
+            }
         } else {
-            Console.print("The computer has already picked that location!");
-            getComputerChoice();
+            isFinished = checkTie();
+            if (!isFinished) getComputerChoice();
         }
     }
 
     public static boolean checkBoardPositionEmpty(int row, int col) {
-        if (board[row][col] == 1) {
+        if (row > board.length-1 || row < 0 || col > board.length-1 || col < 0) {
+            Console.print("That position is out of bounds!");
             return false;
-        } else {
-            return board[row][col] != 2;
         }
+        if (board[row][col] == 1) {
+            Console.print("That location has already been picked!");
+            return false;
+        }
+        else return board[row][col] != 2;
     }
 
     public static boolean gameOver(int player, int currentRow, int currentColumn) {
@@ -90,6 +123,11 @@ public class TicTacToe {
             int col = i % board.length;
             if (board[row][col] == 0) return false;
         }
+        draws++;
         return true;
+    }
+
+    public static int getNumberOfGames() {
+        return Console.readInt("How many rounds would you like to play?");
     }
 }

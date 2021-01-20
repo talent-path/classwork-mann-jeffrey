@@ -43,18 +43,19 @@ public class TicTacToe {
     }
 
     public static void printBoard() {
+        String[] displayChars = {"-","X","O"};
         for (int i = 0; i < board.length * board.length; i++) {
             int row = i / board.length;
             int col = i % board.length;
-            String boardToken = board[row][col] == 0 ? "-" : (board[row][col] == 1 ? "X" : "O");
+            String boardToken = displayChars[board[row][col]];
             System.out.print(boardToken + " ");
             if (i % board.length == board.length - 1) System.out.println();
         }
     }
 
     public static void getUserChoice() {
-        int userRow = Console.readInt("Choose the row: 1-3");
-        int userCol = Console.readInt("Choose the column: 1-3");
+        int userRow = Console.readInt("Choose the row: 1-3", 1, 3);
+        int userCol = Console.readInt("Choose the column: 1-3", 1, 3);
         if (checkBoardPositionEmpty(userRow - 1, userCol - 1)) {
             board[userRow - 1][userCol - 1] = 1;
             printBoard();

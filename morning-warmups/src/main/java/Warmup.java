@@ -1,11 +1,23 @@
+import java.util.*;
+
 public class Warmup {
     public static void main(String[] args) {
-        System.out.println(maxMirror(new int[]{1, 2, 1, 4})); // expect 3
-        System.out.println(maxMirror(new int[]{21, 22, 9, 8, 7, 6, 23, 24, 6, 7, 8, 9, 25, 7, 8, 9})); // expect 4
+        String[] names = new String[]{"Bob", "Robert", "Robby", "Bobby", "Alice", "Alicia", "Al", "Bogart", "Rothy"};
 
+        Map<String, List<String>> firstTwoMap = groupByFirstNLetters(names, 3);
+
+        System.out.println(firstTwoMap);
+
+        for (String key : firstTwoMap.keySet()) {
+            String nameList = "";
+            for (String name : firstTwoMap.get(key)) {
+                nameList += name + ", ";
+            }
+            System.out.println(key + ": " + nameList);
+        }
     }
 
-    public static boolean noTriples(int [] arr) {
+    public static boolean noTriples(int[] arr) {
 //        return true if there are no triples in the array
         int temp = arr[0];
         boolean isDouble = false;
@@ -63,17 +75,17 @@ public class Warmup {
         int mirrorLength = 0;
 
         for (int i = 0; i < nums.length - mirrorLength; i++) {
-            for (int j = nums.length-1; j >= 0; j--) {
+            for (int j = nums.length - 1; j >= 0; j--) {
                 if (nums[i] == nums[j]) {
                     int currentLength = 1;
-                    for (int offset = 1; i + offset < nums.length && j - offset >= 0; offset ++) {
-                        if (nums[i+offset] == nums[j-offset]) {
+                    for (int offset = 1; i + offset < nums.length && j - offset >= 0; offset++) {
+                        if (nums[i + offset] == nums[j - offset]) {
                             currentLength++;
                         } else {
                             break;
                         }
                     }
-                    if ( currentLength > mirrorLength) {
+                    if (currentLength > mirrorLength) {
                         mirrorLength = currentLength;
                     }
                 }
@@ -81,5 +93,27 @@ public class Warmup {
         }
 
         return mirrorLength;
+    }
+
+    public static Map<String, List<String>> groupByFirstTwoLetters(String[] arr) {
+        return groupByFirstNLetters(arr, 2);
+    }
+
+    public static Map<String, List<String>> groupByFirstNLetters(String[] arr, int n) {
+        Map<String, List<String>> output = new HashMap<String, List<String>>();
+        for (String name : arr) {
+            String firstN = name.length() > n ? name.substring(0, n) : name;
+            firstN = firstN.toLowerCase(Locale.ROOT);
+            if (output.containsKey(firstN)) {
+                List<String> existingList = output.get(firstN);
+                existingList.add(name);
+            } else {
+                List<String> newList = new ArrayList<>();
+                newList.add(name);
+                output.put(firstN, newList);
+            }
+        }
+
+        return output;
     }
 }

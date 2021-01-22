@@ -37,13 +37,15 @@ public abstract class Character implements Chooser {
 
     public void attack(Character defender) {
         int damage = this.weapon.generateDamage();
-        Console.print(String.format("%s attack %s for %d damage!\n", this.name, defender.name, damage));
+        Console.print(String.format("%s attacks %s for ", this.name, defender.name));
+        Console.printRed(String.format("%d damage!\n", damage));
         defender.takeDamage(damage);
     }
 
     public void takeDamage(int damage) {
         this.hitPoints -= damage;
-        Console.print(String.format("%s's hit points are at %d\n", this.name, this.hitPoints));
+        Console.print(String.format("%s's hit points are at ", this.name));
+        Console.printGreen(String.format("%d\n", this.hitPoints));
     }
 
     public boolean isAlive() {

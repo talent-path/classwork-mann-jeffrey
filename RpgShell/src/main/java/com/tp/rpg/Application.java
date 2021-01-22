@@ -35,18 +35,17 @@ public class Application {
         Character defender = b;
 
         while( a.isAlive() && b.isAlive() ){
-            if( attacker.makeChoice().equals(Choice.ATTACK)) {
+            Choice attackerChoice = attacker.makeChoice();
+            if( attackerChoice.equals(Choice.ATTACK)) {
                 attacker.attack(defender);
-            } else {
-                //TODO: consider other actions
-                throw new UnsupportedOperationException();
+            } else if (attackerChoice.equals(Choice.CHANGEEQUIPMENT)){
+                attacker.chooseArmor();
+                attacker.chooseWeapon();
             }
 
             Character temp = attacker;
             attacker = defender;
             defender = temp;
-
-            //TODO: display HP status?
         }
     }
 

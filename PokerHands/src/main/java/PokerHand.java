@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 public class PokerHand {
     //    field variables
@@ -7,13 +8,18 @@ public class PokerHand {
     PlayingCard[] cards;
 
     public PokerHand(PlayingCard[] cards) {
-//        if (cards.length != 5) {
-////            TODO: create a specific exception
-//            throw new Exception("Invalid number of cards!");
-//        }
-
         this.cards = cards;
+        sortCards();
+    }
 
+    public PokerHand(List<PlayingCard> cards) {
+        PlayingCard[] listToArray = new PlayingCard[5];
+
+        for (int i = 0; i < cards.size(); i++) {
+            listToArray[i] = cards.get(i);
+        }
+
+        this.cards = listToArray;
         sortCards();
     }
 
@@ -71,7 +77,15 @@ public class PokerHand {
         return count;
     }
 
-    public FaceValue straightHighCardValue() {
+    public FaceValue highestCardValue() {
+        PlayingCard highestCard = cards[0];
+        for (PlayingCard card : cards) {
+            highestCard = card.cardValue.value > highestCard.cardValue.value ? card : highestCard;
+        }
+        return highestCard.cardValue;
+    }
+
+    public FaceValue straightHighestValue() {
         FaceValue highestValue = cards[cards.length - 1].cardValue;
         for (FaceValue key : this.countFaceValues().keySet()) {
             if (this.countFaceValues().get(key) != 1) return null;
@@ -102,7 +116,7 @@ public class PokerHand {
     }
 
     public boolean isStraightFlush() {
-        return (straightHighCardValue() != null) && isFlush();
+        return (straightHighestValue() != null) && isFlush();
     }
 
     public boolean isRoyalFlush() {
@@ -113,14 +127,19 @@ public class PokerHand {
     }
 
     public boolean isFullHouse() {
-        if (this.pairValue() != null && this.threeOfAKindValue() != null) return true;
-        return false;
+        return this.pairValue() != null && this.threeOfAKindValue() != null;
     }
 
     public FaceValue fourOfAKindValue() {
         FaceValue highestFour = null;
         for (FaceValue key : this.countFaceValues().keySet()) {
-            if (this.countFaceValues().get(key) == 4) highestFour = key;
+            if (this.countFaceValues().get(key) == 4) {
+                if (highestFour == null) {
+                    highestFour = key;
+                } else if (key.value > highestFour.value) {
+                    highestFour = key;
+                }
+            }
         }
         return highestFour;
     }
@@ -128,7 +147,13 @@ public class PokerHand {
     public FaceValue threeOfAKindValue() {
         FaceValue highestTriple = null;
         for (FaceValue key : this.countFaceValues().keySet()) {
-            if (this.countFaceValues().get(key) == 3) highestTriple = key;
+            if (this.countFaceValues().get(key) == 3) {
+                if (highestTriple == null) {
+                    highestTriple = key;
+                } else if (key.value > highestTriple.value) {
+                    highestTriple = key;
+                }
+            }
         }
         return highestTriple;
     }
@@ -136,7 +161,13 @@ public class PokerHand {
     public FaceValue pairValue() {
         FaceValue highestPair = null;
         for (FaceValue key : this.countFaceValues().keySet()) {
-            if (this.countFaceValues().get(key) == 2) highestPair = key;
+            if (this.countFaceValues().get(key) == 2) {
+                if (highestPair == null) {
+                    highestPair = key;
+                } else if (key.value > highestPair.value) {
+                    highestPair = key;
+                }
+            }
         }
         return highestPair;
     }
@@ -154,32 +185,45 @@ public class PokerHand {
     public int compareTo(PokerHand that) {
         int hand1Score = this.scoreHand();
         int hand2Score = that.scoreHand();
-//        best possible game is two royal flushes which is a tie
-//        if this or that has a royal flush they win
-//        if this or that has a straight flush and the other has anything but a straight flush or higher they win
-//
 
         if (hand1Score == hand2Score) {
             //TODO: This has several breaking null pointer exceptions when asking for value
-//            high card straight
-//            if (this.straightHighCardValue().value > that.straightHighCardValue().value) return 1;
-//            else if (this.straightHighCardValue().value < that.straightHighCardValue().value) return -1;
-//            high card four of a kind
-//            if (this.fourOfAKindValue().value > that.fourOfAKindValue().value) return 1;
-//            else if (this.fourOfAKindValue().value < that.fourOfAKindValue().value) return -1;
-//            high card full house
-//            if (this.threeOfAKindValue().value > that.threeOfAKindValue().value) return 1;
-//            else if (this.threeOfAKindValue().value < that.threeOfAKindValue().value) return -1;
-//             high card flush
-//            if (this.flushHighestValue().value > that.flushHighestValue().value) return 1;
-//            else if (this.flushHighestValue().value < that.flushHighestValue().value) return -1;
-//            high card pair
-//            if (this.pairValue().value > that.pairValue().value) return 1;
-//            else if (this.pairValue().value < that.pairValue().value) return -1;
-//            high card in hand
-//            if (this.cards[0].cardValue.value > that.cards[0].cardValue.value) return 1;
-//            else if (this.cards[0].cardValue.value < that.cards[0].cardValue.value) return -1;
 
+            //SWITCH
+            switch (hand1Score) {
+                case 90:
+                    return 0;
+                case 80:
+                    return this.fourOfAKindValue().value > that.fourOfAKindValue().value ? 1 : -1;
+                case 70:
+                    if (this.threeOfAKindValue().value != that.threeOfAKindValue().value) {
+                        return this.threeOfAKindValue().value > that.threeOfAKindValue().value ? 1 : -1;
+                    } else {
+                        return this.pairValue().value > that.pairValue().value ? 1 : -1;
+                    }
+                case 60:
+                    return this.flushHighestValue().value > that.flushHighestValue().value ? 1 : -1;
+                case 50:
+                    return this.straightHighestValue().value > that.straightHighestValue().value ? 1 : -1;
+                case 40:
+                    return this.threeOfAKindValue().value > that.threeOfAKindValue().value ? 1 : -1;
+                case 30:
+                    if (this.pairValue().value != that.pairValue().value) {
+                        return this.pairValue().value > that.pairValue().value ? 1 : -1;
+                    } else if (this.lowerPairValue().value != that.lowerPairValue().value){
+                        return this.lowerPairValue().value > that.lowerPairValue().value ? 1 : -1;
+                    } else {
+                        return this.highestCardValue().value > that.highestCardValue().value ? 1 : -1;
+                    }
+                case 20:
+                    if (this.pairValue().value != that.pairValue().value) {
+                        return this.pairValue().value > that.pairValue().value ? 1 : -1;
+                    } else {
+                        return this.highestCardValue().value > that.highestCardValue().value ? 1 : -1;
+                    }
+                case 0:
+                    return this.highestCardValue().value > that.highestCardValue().value ? 1 : -1;
+            }
             return 0;
         }
         return (hand1Score - hand2Score) / Math.abs(hand1Score - hand2Score);
@@ -187,17 +231,24 @@ public class PokerHand {
 
     public int scoreHand() {
         int score = 0;
+        //royal flush
         if (this.isRoyalFlush()) score += 100;
+        //straight flush
         else if (this.isStraightFlush()) score += 90;
+        //four of a kind
         else if (this.fourOfAKindValue() != null) score += 80;
+        //full house
         else if (this.isFullHouse()) score += 70;
+        //flush
         else if (this.isFlush()) score += 60;
-        else if (this.straightHighCardValue() != null) score += 50;
+        //straight
+        else if (this.straightHighestValue() != null) score += 50;
+        //three of a kind
         else if (this.threeOfAKindValue() != null) score += 40;
+        //two pair
         else if (this.pairValue() != null && this.lowerPairValue() != null) score += 30;
+        //pair
         else if (this.pairValue() != null) score += 20;
-
-        System.out.println(score);
 
         return score;
     }

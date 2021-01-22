@@ -26,19 +26,6 @@ public class Application {
 //        PlayingCard.setCardValue();
 //        PlayingCard.setCardSuit();
 
-        //                                                  straight flush vs 4 of a kind
-        //                                            2D  3D 4D 5D  6D  7S  7D  7C  7H  8S
-//        int[] bothHands = {1, 5, 9, 13, 17, 20, 21, 22, 23, 24};
-//        PlayingCard[] hand1Cards = new PlayingCard[5];
-//        PlayingCard[] hand2Cards = new PlayingCard[5];
-//
-//        for (int i = 0; i < bothHands.length; i++) {
-//            if (i < 5) hand1Cards[i] = new PlayingCard(bothHands[i]);
-//            else hand2Cards[i] = new PlayingCard(bothHands[i]);
-//        }
-//
-//        PokerHand hand1 = new PokerHand(hand1Cards);
-//        PokerHand hand2 = new PokerHand(hand2Cards);
 
 //        HAND 1
         PokerHand hand1 = new PokerHand(new PlayingCard[]{
@@ -67,11 +54,12 @@ public class Application {
                 h1Suits.keySet()) {
             System.out.println(key + ": " + h1Suits.get(key));
         }
+        System.out.println("Pair with value: " + hand1.pairValue());
         System.out.println("Second Pair with value: " + hand1.lowerPairValue());
         System.out.println("Three of a kind of value: " + hand1.threeOfAKindValue());
         System.out.println("Four of a kind with value: " + hand1.fourOfAKindValue());
         System.out.println("Is this a full house: " + hand1.isFullHouse());
-        System.out.println("Straight with high card: " + hand1.straightHighCardValue());
+        System.out.println("Straight with high card: " + hand1.straightHighestValue());
         System.out.println("Is this a flush? " + hand1.isFlush());
         System.out.println("Flush suit: " + hand1.flushSuit());
         System.out.println("Flush high card: " + hand1.flushHighestValue());
@@ -110,7 +98,7 @@ public class Application {
         System.out.println("Three of a kind of value: " + hand2.threeOfAKindValue());
         System.out.println("Four of a kind with value: " + hand2.fourOfAKindValue());
         System.out.println("Is this a full house: " + hand2.isFullHouse());
-        System.out.println("Straight with high card: " + hand2.straightHighCardValue());
+        System.out.println("Straight with high card: " + hand2.straightHighestValue());
         System.out.println("Is this a flush? " + hand2.isFlush());
         System.out.println("Flush suit: " + hand2.flushSuit());
         System.out.println("Flush high card: " + hand2.flushHighestValue());

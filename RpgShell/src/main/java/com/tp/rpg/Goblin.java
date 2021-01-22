@@ -5,9 +5,10 @@ import com.tp.rpg.weapons.Fist;
 
 //goblins always attack?
 public class Goblin extends NonPlayerCharacter {
+    private String[] goblinNames = {"Gormlock", "Smeek", "Krungle", "Spaghett", "Froosh"};
     public Goblin() {
         this.hitPoints = 30;
-        this.name = "Gormlock";
+        this.name = goblinNames[RNG.randInt(0, goblinNames.length-1)];
         Console.print("An unarmed Goblin appears, ready to fight!\n");
     }
 

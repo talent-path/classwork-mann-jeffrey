@@ -1,5 +1,7 @@
 package com.tp.rpg.weapons;
 
+import com.tp.rpg.RNG;
+
 public class Fist implements Weapon {
 
     @Override
@@ -9,6 +11,6 @@ public class Fist implements Weapon {
 
     @Override
     public int generateDamage() {
-        return 1;
+        return (int)Math.floor(RNG.randGaussian(2.0,0.5));
     }
 }

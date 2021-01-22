@@ -47,10 +47,13 @@ public class Application {
             attacker = defender;
             defender = temp;
         }
+        if (!b.isAlive()) Console.print(String.format("\n%s has been defeated!\n\n", b.name));
+        else if (!a.isAlive()) Console.print(String.format("\n%s have been defeated!\n\n", a.name));
     }
 
     //display some message
     private static void gameOverScreen() {
-        throw new UnsupportedOperationException();
+        Console.print("\n\n\n\n");
+        Console.printYellow("You have been vanquished\nYour quest has come to an end\nAnd you may rest\n");
     }
 }

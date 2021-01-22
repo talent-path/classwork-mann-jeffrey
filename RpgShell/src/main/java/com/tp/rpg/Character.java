@@ -13,14 +13,12 @@ package com.tp.rpg;
 //          could give us TWO attacks on the next round?
 
 import com.tp.rpg.armors.Armor;
-import com.tp.rpg.armors.Shirt;
 import com.tp.rpg.weapons.Weapon;
-
-import java.util.List;
 
 public abstract class Character implements Chooser {
     //TODO: add fields for armor(s) and weapon(s)
 
+    String name;
     int hitPoints;
     Armor armor;
     Weapon weapon;
@@ -38,15 +36,18 @@ public abstract class Character implements Chooser {
     }
 
     public void attack(Character defender) {
-        throw new UnsupportedOperationException();
+        int damage = this.weapon.generateDamage();
+        Console.print(String.format("%s attack %s for %d damage!\n", this.name, defender.name, damage));
+        defender.takeDamage(damage);
     }
 
     public void takeDamage(int damage) {
-        throw new UnsupportedOperationException();
+        this.hitPoints -= damage;
+        Console.print(String.format("%s's hit points are at %d\n", this.name, this.hitPoints));
     }
 
     public boolean isAlive() {
-        throw new UnsupportedOperationException();
+        return hitPoints > 0;
     }
 
 }

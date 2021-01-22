@@ -14,6 +14,9 @@ public class PlayerCharacter extends Character {
     List<Weapon> weaponInventory;
 
     public PlayerCharacter() {
+        this.hitPoints = 50;
+        this.name = "You";
+
         this.armorInventory = new ArrayList<>();
         this.armorInventory.add(new Shirt());
 
@@ -47,7 +50,14 @@ public class PlayerCharacter extends Character {
 
     //use scanner here to get something from the user
     @Override
-    public String makeChoice() {
-        throw new UnsupportedOperationException();
+    public Choice makeChoice() {
+        int choice = Console.readInt("Will you attack (1) or change your equipment (2)?", 1, 2);
+        switch (choice) {
+            case 1:
+                return Choice.ATTACK;
+            case 2:
+                return Choice.CHANGEEQUIPMENT;
+        }
+        return null;
     }
 }

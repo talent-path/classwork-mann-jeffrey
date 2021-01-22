@@ -23,7 +23,10 @@ public class Application {
 
     //create some NPC object (with armor & weapons?)
     private static NonPlayerCharacter setUpEnemy() {
-        throw new UnsupportedOperationException();
+        Goblin enemy = new Goblin();
+        enemy.chooseArmor();
+        enemy.chooseWeapon();
+        return enemy;
     }
 
     //a and b battle until one is dead
@@ -32,16 +35,16 @@ public class Application {
         Character defender = b;
 
         while( a.isAlive() && b.isAlive() ){
-            if( a.makeChoice().equals("Attack")) {
+            if( attacker.makeChoice().equals(Choice.ATTACK)) {
                 attacker.attack(defender);
             } else {
                 //TODO: consider other actions
                 throw new UnsupportedOperationException();
             }
 
-            Character temp = a;
-            a = b;
-            b = temp;
+            Character temp = attacker;
+            attacker = defender;
+            defender = temp;
 
             //TODO: display HP status?
         }

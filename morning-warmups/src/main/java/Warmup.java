@@ -2,19 +2,7 @@ import java.util.*;
 
 public class Warmup {
     public static void main(String[] args) {
-        String[] names = new String[]{"Bob", "Robert", "Robby", "Bobby", "Alice", "Alicia", "Al", "Bogart", "Rothy"};
-
-        Map<String, List<String>> firstTwoMap = groupByFirstNLetters(names, 3);
-
-        System.out.println(firstTwoMap);
-
-        for (String key : firstTwoMap.keySet()) {
-            String nameList = "";
-            for (String name : firstTwoMap.get(key)) {
-                nameList += name + ", ";
-            }
-            System.out.println(key + ": " + nameList);
-        }
+        System.out.println(longestCollatzSequence());
     }
 
     public static boolean noTriples(int[] arr) {
@@ -115,5 +103,74 @@ public class Warmup {
         }
 
         return output;
+    }
+
+    public static long collatzRule(long n) throws Exception {
+        if (n < 1) throw new Exception("n must be greater than 1!");
+        if (n % 2 == 0) {
+            n = n / 2;
+        } else {
+            n = 3 * n + 1;
+        }
+        return n;
+    }
+
+    public static long collatzRuleRecursive(long n) throws Exception {
+
+        if (n < 1) throw new Exception("n must be greater than 1!");
+        if (n % 2 == 0) {
+            n = n / 2;
+        } else {
+            n = 3 * n + 1;
+        }
+        return n;
+    }
+
+    public static int collatzSequence(long n) {
+        int iter = 0;
+        while (n > 1) {
+            try {
+                n = collatzRule(n);
+            } catch (Exception e) {
+                System.out.println(e.toString());
+                System.exit(1);
+            }
+            iter++;
+        }
+        return iter;
+    }
+
+    public static int collatzSequenceMemoized(long n, Map<Long, Integer> memo) {
+        int iter = 0;
+        if (memo.containsKey(n)) {
+            iter = memo.get(n);
+        } else {
+            while (n > 1) {
+                try {
+                    n = collatzRule(n);
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                    System.exit(1);
+                }
+                iter++;
+            }
+            memo.put(n, iter);
+        }
+        return iter;
+    }
+
+    public static long longestCollatzSequence() {
+        int length = -1;
+        long longestSequence = -1;
+        Map<Long, Integer> memo = new HashMap<>();
+        for (long i = 1; i < 100000000; i++) {
+            int currentLength = collatzSequenceMemoized(i, memo);
+            if (currentLength > length) {
+                length = currentLength;
+                longestSequence = i;
+                System.out.println(longestSequence + ": " + length);
+            }
+        }
+        return longestSequence;
     }
 }

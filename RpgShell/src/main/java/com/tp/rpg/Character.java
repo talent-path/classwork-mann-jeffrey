@@ -12,8 +12,8 @@ package com.tp.rpg;
 //          could stun the opponent if they attack?
 //          could give us TWO attacks on the next round?
 
-import com.tp.rpg.armors.Armor;
-import com.tp.rpg.weapons.Weapon;
+import com.tp.rpg.items.armors.Armor;
+import com.tp.rpg.items.weapons.Weapon;
 
 public abstract class Character implements Chooser {
     //TODO: add fields for armor(s) and weapon(s)
@@ -36,7 +36,7 @@ public abstract class Character implements Chooser {
     }
 
     public void attack(Character defender) {
-        int damage = this.weapon.generateDamage();
+        int damage = defender.armor.reduceDamage(this.weapon.generateDamage());
         Console.print(String.format("%s attacks %s for ", this.name, defender.name));
         Console.printRed(String.format("%d damage!\n", damage));
         defender.takeDamage(damage);
@@ -51,5 +51,4 @@ public abstract class Character implements Chooser {
     public boolean isAlive() {
         return hitPoints > 0;
     }
-
 }

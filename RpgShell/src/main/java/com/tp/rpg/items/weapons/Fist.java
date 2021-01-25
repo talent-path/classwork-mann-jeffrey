@@ -1,4 +1,4 @@
-package com.tp.rpg.weapons;
+package com.tp.rpg.items.weapons;
 
 import com.tp.rpg.RNG;
 

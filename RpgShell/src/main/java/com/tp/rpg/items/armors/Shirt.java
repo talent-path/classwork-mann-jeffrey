@@ -1,4 +1,4 @@
-package com.tp.rpg.armors;
+package com.tp.rpg.items.armors;
 
 public class Shirt implements Armor  {
 

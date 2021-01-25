@@ -1,7 +1,7 @@
 package com.tp.rpg;
 
-import com.tp.rpg.armors.Shirt;
-import com.tp.rpg.weapons.Fist;
+import com.tp.rpg.items.armors.Shirt;
+import com.tp.rpg.items.weapons.Fist;
 
 //goblins always attack?
 public class Goblin extends NonPlayerCharacter {

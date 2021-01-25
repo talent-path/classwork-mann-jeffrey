@@ -87,7 +87,7 @@ public class Console {
             if (value >= min && value <= max) {
                 isValid = true;
             } else {
-                System.out.println("Please input number between min & max.");
+                System.out.println(String.format("Please input number between %d & %d.", min, max));
             }
         }
         return value;

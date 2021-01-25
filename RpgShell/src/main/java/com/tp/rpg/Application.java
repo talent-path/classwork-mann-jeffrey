@@ -1,15 +1,17 @@
 package com.tp.rpg;
 
+import com.tp.rpg.items.Item;
+import com.tp.rpg.items.armors.Armor;
+import com.tp.rpg.items.weapons.Weapon;
+
 public class Application {
     public static void main(String[] args) {
         PlayerCharacter pc = setUpPlayer();
 
         while (pc.isAlive()) {
             NonPlayerCharacter enemy = setUpEnemy();
-
             battle(pc, enemy);
         }
-
         gameOverScreen();
     }
 
@@ -47,13 +49,61 @@ public class Application {
             attacker = defender;
             defender = temp;
         }
-        if (!b.isAlive()) Console.print(String.format("\n%s has been defeated!\n\n", b.name));
+        if (!b.isAlive()) {
+            PlayerCharacter player = (PlayerCharacter) a;
+            NonPlayerCharacter defeated = (NonPlayerCharacter) b;
+            Console.print(String.format("\n%s has been defeated!\n\n", defeated.name));
+            Item loot = defeated.lootDrop();
+            if (loot instanceof Weapon) {
+                player.weaponInventory.add((Weapon) loot);
+            } else if (loot instanceof Armor){
+                player.armorInventory.add((Armor) loot);
+            }
+        }
         else if (!a.isAlive()) Console.print(String.format("\n%s have been defeated!\n\n", a.name));
     }
 
     //display some message
     private static void gameOverScreen() {
-        Console.print("\n\n\n\n");
-        Console.printYellow("You have been vanquished\nYour quest has come to an end\nAnd you may rest\n");
+        Console.print("    ");
+        Console.printBlack("-");
+        Console.printBlue("<<");
+        Console.printYellow("{{");
+        Console.printRed("((");
+        Console.print("000");
+        Console.printRed("))");
+        Console.printYellow("}}");
+        Console.printBlue(">>");
+        Console.printBlack("-\n");
+        Console.printBlack("-");
+        Console.printBlue("<<<");
+        Console.printYellow("{{{");
+        Console.printRed("(((");
+        Console.print("00000");
+        Console.printRed(")))");
+        Console.printYellow("}}}");
+        Console.printBlue(">>>");
+        Console.printBlack("-\n");
+//        -<<{{((0O0))}}>>-
+        Console.printYellow("You have been vanquished\nYour quest has come to an end\n");
+        Console.printBlack("-");
+        Console.printBlue("<<<");
+        Console.printYellow("{{{");
+        Console.printRed("(((");
+        Console.print("00000");
+        Console.printRed(")))");
+        Console.printYellow("}}}");
+        Console.printBlue(">>>");
+        Console.printBlack("-\n");
+        Console.print("    ");
+        Console.printBlack("-");
+        Console.printBlue("<<");
+        Console.printYellow("{{");
+        Console.printRed("((");
+        Console.print("000");
+        Console.printRed("))");
+        Console.printYellow("}}");
+        Console.printBlue(">>");
+        Console.printBlack("-\n");
     }
 }

@@ -1,8 +1,9 @@
-package com.tp.rpg.armors;
+package com.tp.rpg.items.armors;
 
-public interface Armor {
+import com.tp.rpg.items.Item;
+
+public interface Armor extends Item {
     //takes in amt of damage dealt
     //outputs amount of damage to actually take
-    String getName();
     int reduceDamage(int startingDamage);
 }

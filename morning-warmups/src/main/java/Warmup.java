@@ -2,7 +2,12 @@ import java.util.*;
 
 public class Warmup {
     public static void main(String[] args) {
-        System.out.println(longestCollatzSequence());
+        System.out.println(flipDigits(321));
+        System.out.println(flipDigits(1000));
+        System.out.println(flipDigits(14351));
+        System.out.println(flipDigits(23456789));
+        System.out.println(davidsFlipDigits(-12));
+        System.out.println(davidsFlipDigits(12));
     }
 
     public static boolean noTriples(int[] arr) {
@@ -172,5 +177,31 @@ public class Warmup {
             }
         }
         return longestSequence;
+    }
+
+    public static int flipDigits(int toFlip) {
+        int numDigits = (int) (Math.log10(toFlip) + 1);
+        int output = 0;
+
+        for (int i = 1; i < numDigits+1; i++) {
+            int currentDigit = (toFlip % (int) Math.pow(10, i)) / (int) Math.pow(10, i-1);
+            output += currentDigit * (int) Math.pow(10, numDigits - i);
+        }
+
+        return output;
+    }
+
+    public static int davidsFlipDigits(int toFlip) {
+        int flipped = 0;
+
+        while (toFlip != 0) {
+            int onesPlace = toFlip % 10;
+            toFlip /= 10;
+
+            flipped *= 10;
+            flipped += onesPlace;
+;        }
+
+        return flipped;
     }
 }

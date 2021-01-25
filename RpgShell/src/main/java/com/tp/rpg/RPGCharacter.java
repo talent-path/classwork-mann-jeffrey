@@ -15,11 +15,11 @@ package com.tp.rpg;
 import com.tp.rpg.items.armors.Armor;
 import com.tp.rpg.items.weapons.Weapon;
 
-public abstract class Character implements Chooser {
+public abstract class RPGCharacter implements Chooser {
     //TODO: add fields for armor(s) and weapon(s)
 
-    String name;
-    int hitPoints;
+    public String name;
+    public int hitPoints;
     Armor armor;
     Weapon weapon;
 
@@ -35,7 +35,9 @@ public abstract class Character implements Chooser {
         weapon = choice;
     }
 
-    public void attack(Character defender) {
+    public abstract void chooseItem();
+
+    public void attack(RPGCharacter defender) {
         int damage = defender.armor.reduceDamage(this.weapon.generateDamage());
         Console.print(String.format("%s attacks %s for ", this.name, defender.name));
         Console.printRed(String.format("%d damage!\n", damage));

@@ -1,15 +1,19 @@
 package com.tp.rpg;
 
 import com.tp.rpg.items.Item;
-import com.tp.rpg.items.armors.ChainMail;
-import com.tp.rpg.items.armors.Shirt;
-import com.tp.rpg.items.weapons.Sword;
+import com.tp.rpg.items.potions.HealthPotion;
 
-public abstract class NonPlayerCharacter extends Character {
-    private Item[] lootItems = new Item[]{new Shirt(), new Sword(), new ChainMail()};
+public abstract class NonPlayerCharacter extends RPGCharacter {
+    private Item[] lootItems = new Item[]{new HealthPotion()};
+
     public Item lootDrop() {
-        Item drop = lootItems[RNG.randInt(0, lootItems.length-1)];
-        Console.print(String.format("%s dropped a new %s\n", this.name, drop.getName()));
+        Item drop = lootItems[RNG.randInt(0, lootItems.length - 1)];
+        Console.print(String.format("%s dropped a new \u001B[35m%s\u001B[0m\n", this.name, drop.getName()));
         return drop;
+    }
+
+    @Override
+    public void chooseItem() {
+        return;
     }
 }

@@ -2,12 +2,10 @@ import java.util.*;
 
 public class Warmup {
     public static void main(String[] args) {
-        System.out.println(flipDigits(321));
-        System.out.println(flipDigits(1000));
-        System.out.println(flipDigits(14351));
-        System.out.println(flipDigits(23456789));
-        System.out.println(davidsFlipDigits(-12));
-        System.out.println(davidsFlipDigits(12));
+        System.out.println(lengthOfLongestSubstring("sss"));
+        System.out.println(lengthOfLongestSubstring("sas"));
+        System.out.println(lengthOfLongestSubstring("pwwkew"));
+        System.out.println(lengthOfLongestSubstring("abcabcbb"));
     }
 
     public static boolean noTriples(int[] arr) {
@@ -203,5 +201,24 @@ public class Warmup {
 ;        }
 
         return flipped;
+    }
+
+    public static int lengthOfLongestSubstring(String s) {
+        int longest = 0;
+
+        for (int i = 1; i < s.length(); i++) {
+            int subLength = s.length();
+            for (int j = 0; j < subLength; j++) {
+                if (i != j) {
+                    if (s.charAt(i) == s.charAt(j)) {
+                        subLength--;
+                    } else {
+                        longest = subLength;
+                    }
+                }
+            }
+        }
+
+        return longest;
     }
 }

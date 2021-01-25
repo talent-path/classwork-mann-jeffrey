@@ -1,8 +1,6 @@
 package com.tp.rpg;
 
 import com.tp.rpg.items.Item;
-import com.tp.rpg.items.armors.Armor;
-import com.tp.rpg.items.weapons.Weapon;
 
 public class Application {
     public static void main(String[] args) {
@@ -32,9 +30,9 @@ public class Application {
     }
 
     //a and b battle until one is dead
-    private static void battle(Character a, Character b) {
-        Character attacker = a;
-        Character defender = b;
+    private static void battle(RPGCharacter a, RPGCharacter b) {
+        RPGCharacter attacker = a;
+        RPGCharacter defender = b;
 
         while( a.isAlive() && b.isAlive() ){
             Choice attackerChoice = attacker.makeChoice();
@@ -43,9 +41,11 @@ public class Application {
             } else if (attackerChoice.equals(Choice.CHANGEEQUIPMENT)){
                 attacker.chooseArmor();
                 attacker.chooseWeapon();
+            } else if (attackerChoice.equals(Choice.USEITEM)) {
+                attacker.chooseItem();
             }
 
-            Character temp = attacker;
+            RPGCharacter temp = attacker;
             attacker = defender;
             defender = temp;
         }
@@ -54,11 +54,7 @@ public class Application {
             NonPlayerCharacter defeated = (NonPlayerCharacter) b;
             Console.print(String.format("\n%s has been defeated!\n\n", defeated.name));
             Item loot = defeated.lootDrop();
-            if (loot instanceof Weapon) {
-                player.weaponInventory.add((Weapon) loot);
-            } else if (loot instanceof Armor){
-                player.armorInventory.add((Armor) loot);
-            }
+            player.pickupItem(loot);
         }
         else if (!a.isAlive()) Console.print(String.format("\n%s have been defeated!\n\n", a.name));
     }

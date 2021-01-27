@@ -12,26 +12,10 @@ public class Application {
 
 //    (String[] args) - method parameters
     public static void main(String[] args) {
-//        int [] testArr = {82, 95, 71, 6, 34};
-//
-//        int min = Aggregate.min( testArr );
-//        int max = Aggregate.max( testArr );
-//        int sum = Aggregate.sum( testArr );
-//        double avg = Aggregate.average( testArr );
-//        double sStd = Aggregate.sampleStandardDeviation( testArr );
-//        double pStd = Aggregate.populationStandardDeviation( testArr );
-//
-//        System.out.println( min );
-//        System.out.println( max );
-//        System.out.println( sum );
-//        System.out.println( avg );
-//        System.out.println( sStd );
-//        System.out.println( pStd );
-
-//        for (int i = 1; i < 20; i++) {
-//            System.out.println(fibRecursive(i));
-//        }
-
-        RockPaperScissors.play();
+        int[] sorted = Aggregate.bubbleSort(new int[] {73, 2, 7, 82, 100, 20, 9, 25, 32,
+                                        97, 91, 96, 81, 8, 78, 54, 93, 26, 36, 69});
+        for (int n : sorted) {
+            System.out.println(n);
+        }
     }
 }

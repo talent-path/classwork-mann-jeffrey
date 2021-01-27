@@ -79,4 +79,22 @@ public class Aggregate {
 
         return Math.sqrt(sumOfSquares / arr.length);
     }
+
+    public static int[] bubbleSort(int[] toSort) {
+        boolean sorted = false;
+        while (!sorted) {
+            for (int i = 0; i < toSort.length - 1; i++) {
+                boolean swapped = false;
+                if (toSort[i] > toSort[i + 1]) {
+                    int temp = toSort[i];
+                    toSort[i] = toSort[i + 1];
+                    toSort[i + 1] = temp;
+                    swapped = true;
+                }
+                sorted = !swapped;
+            }
+        }
+
+        return toSort;
+    }
 }

@@ -4,17 +4,32 @@ import java.util.stream.Stream;
 
 public class Warmup {
     public static void main(String[] args) {
-        char[][] board = {{'5', '3', '.', '.', '7', '.', '.', '.', '.'}
-                , {'6', '.', '.', '1', '9', '5', '.', '.', '.'}
-                , {'.', '9', '8', '.', '.', '.', '.', '6', '.'}
-                , {'8', '.', '.', '.', '6', '.', '.', '.', '3'}
-                , {'4', '.', '.', '8', '.', '3', '.', '.', '1'}
-                , {'7', '.', '.', '.', '2', '.', '.', '.', '6'}
-                , {'.', '6', '.', '.', '.', '.', '2', '8', '.'}
-                , {'.', '.', '.', '4', '1', '9', '.', '.', '5'}
-                , {'.', '.', '.', '.', '8', '.', '.', '7', '9'}};
+        char[][] board = {
+                {'5', '3', '.', '.', '7', '.', '.', '.', '.'},
+                {'6', '.', '.', '1', '9', '5', '.', '.', '.'},
+                {'.', '9', '8', '.', '.', '.', '.', '6', '.'},
+                {'8', '.', '.', '.', '6', '.', '.', '.', '3'},
+                {'4', '.', '.', '8', '.', '3', '.', '.', '1'},
+                {'7', '.', '.', '.', '2', '.', '.', '.', '6'},
+                {'.', '6', '.', '.', '.', '.', '2', '8', '.'},
+                {'.', '.', '.', '4', '1', '9', '.', '.', '5'},
+                {'.', '.', '.', '.', '8', '.', '.', '7', '9'}};
 
-        System.out.println(isValidSudoku(board));
+//        System.out.println("IN");
+//        for (char[] row : board) {
+//            for (char space : row) {
+//                System.out.print(space + "  ");
+//            }
+//            System.out.println();
+//        }
+        solveSudoku(board);
+//        System.out.println("OUT");
+//        for (char[] row : board) {
+//            for (char space : row) {
+//                System.out.print(space + "  ");
+//            }
+//            System.out.println();
+//        }
     }
 
     public static boolean noTriples(int[] arr) {
@@ -277,65 +292,56 @@ public class Warmup {
     }
 
     public static boolean isValidSudoku(char[][] board) {
-        boolean isValid = false;
-        List<Character> charSet = Stream.of('1', '2', '3', '4', '5', '6', '7', '8', '9')
-                .collect(Collectors.toList());
-        List<Character> found = new ArrayList<>();
+        boolean valid = true;
+        for (int row = 0; valid && row < board.length; row++) {
+            for (int col = 0; valid && col < board[i].length; col++) {
+                if (board[row][col] != '.') {
+                    int boxTop = row / 3 * 3;
+                    int boxLeft = col / 3 * 3;
 
-        for (int i = 0; i < board.length; i++) {
-            // go through each row of the board
-            char[] row = board[i];
-            for (int j = 0; j < row.length; j++) {
-                // if we find an instance of one of our characters
-                if (charSet.contains(row[j])) {
-                    //remove it
-                    charSet.remove(charSet.indexOf(row[j]));
-                    //and add it to list of found characters
-                    found.add(row[j]);
-                    //at the end of the row if we haven't returned false we know its true
-                    if (j == row.length - 1) {
-                        isValid = true;
-                    }
-                // if its not in the character set
-                //    either its a '.' or its already in the found set
-                } else if (!charSet.contains(row[j])) {
-                    isValid = false;
-                    // if its already in the found set then the row is not valid and we can return false
-                    if (found.contains(row[j])) {
-                        return isValid;
-                    }
-                    //at the end of the row if we haven't returned false we know its true
-                    if (j == row.length - 1) {
-                        isValid = true;
-                    }
-                }
-                if (charSet.contains(board[i][j % row.length])) {
-                    if (i == board.length - 1) {
-                        isValid = true;
-                    }
-                } else if (!charSet.contains(board[i][j % row.length])) {
-                    if (i == board.length - 1) {
-                        isValid = true;
+                    for (int i = 0; valid && i < 9; i++) {
+                        int boxR = boxTop + i / 3;
+                        int boxC = boxLeft + i % 3;
+
+                        if ( (row != boxR || col != boxC) && board[row][col] == board[boxR][boxC])
                     }
                 }
             }
-            // reset character set after each row
-            charSet = Stream.of('1', '2', '3', '4', '5', '6', '7', '8', '9')
-                    .collect(Collectors.toList());
-            found.clear();
         }
-
-        return isValid;
     }
 
-//    public boolean isValidSudoku(char[][] board) {
-//        Set<String> values = new HashSet<>();
-//        for (int i = 0; i < board.length; i++) {
-//            char[] row = board[i];
-//            for (int j = 0; j < row.length; j++) {
-//                char box = board[i * 3 / 3][j * 3 / 3];
-//                return (!values.add("r" + ));
-//            }
-//        }
-//    }
+    public static void solveSudoku(char[][] board) {
+        boolean done = false;
+        //1. loop through all squares
+        for (int row = 0; !done && row < 9; row++) {
+            for (int col = 0; !done && col < 9; col++) {
+                //2. if '.' try each nuber one at a time
+                if (board[row][col] == '.') {
+                    for (char toTry = '1'; !done && toTry <= '9'; toTry++) {
+                        board[row][col] = toTry;
+                        if (isValidSudoku(board)) {
+                            //3. recursively call solve sudoku
+                            solveSudoku(board);
+                            done = checkSolved(board);
+                        }
+                    }
+                    if (!done) {
+                        board[row][col] = '.';
+
+                        done = true;
+                    }
+                }
+            }
+        }
+    }
+
+    public static boolean checkSolved(char[][] board) {
+        boolean solved = true;
+        for (int row = 0; solved && row < board.length; row++) {
+            for (int col = 0;solved && col < board[row].length; col++) {
+                if (board[row][col] == '.') solved = false;
+            }
+        }
+        return solved;
+    }
 }

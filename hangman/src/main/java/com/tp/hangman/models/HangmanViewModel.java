@@ -4,8 +4,17 @@ import java.util.List;
 
 public class HangmanViewModel {
 
+    public int id;
     private List<Character> guessedLetters;
     private String partialWord;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public List<Character> getGuessedLetters() {
         return guessedLetters;

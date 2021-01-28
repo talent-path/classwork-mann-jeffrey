@@ -1,16 +1,16 @@
 package com.tp.hangman.controllers;
 
+import com.tp.hangman.exceptions.InvalidGameIdException;
+import com.tp.hangman.exceptions.InvalidGuessException;
+import com.tp.hangman.exceptions.NullGuessException;
 import com.tp.hangman.models.HangmanViewModel;
-import com.tp.hangman.persistence.HangmanInMemDao;
-import com.tp.hangman.services.HangmanService;
-import com.tp.hangman.services.NullGuessException;
-import com.tp.hangman.services.RNG;
+import com.tp.hangman.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 //provides two methods
 //getGameByID() (should show word with guessed letters hidden and all correctly guessed letters)
@@ -25,29 +25,69 @@ public class HangmanController {
     @Autowired
     HangmanService service;
 
+    //CRUD
+    // Create - making new data
+    // Read - retrieving data
+    // Update - changing existing data
+    // Delete - removing data
+
     @GetMapping("/game")
-    public HangmanViewModel getRandomGame() {
-        HangmanInMemDao memory = (HangmanInMemDao) service.dao;
-        return service.getGameById(RNG.rollDice(memory.allGames.size()));
-    }
-
-    @GetMapping("/game/{id}")
-    public HangmanViewModel getGameById(@PathVariable Integer id) {
-        return service.getGameById(id);
-    }
-
-    @GetMapping("/game/{id}/guess/{letter}")
-    public HangmanViewModel guessLetter(@PathVariable Integer id, @PathVariable String letter)
-            throws NullGuessException {
-        HangmanViewModel toReturn = null;
-
-
+    public ResponseEntity getAllGames() throws InvalidGameIdException {
+        List<HangmanViewModel> toReturn = null;
         try {
-            toReturn = service.makeGuess(id, letter);
-        } catch (NullGuessException ex) {
-            ResponseEntity<HangmanViewModel> response = new ResponseEntity<>(HttpStatus.BAD_REQUEST, );
+            toReturn = service.getAllGames();
+        } catch (InvalidGameIdException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
 
         return ResponseEntity.ok(toReturn);
+    }
+
+    @GetMapping("/game/{id}")
+    public ResponseEntity getGameById(@PathVariable Integer id) throws InvalidGameIdException {
+        HangmanViewModel toReturn = null;
+        try {
+            toReturn = service.getGameById(id);;
+        } catch (InvalidGameIdException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @PostMapping("/guess")
+    public ResponseEntity guessLetter(@RequestBody GuessRequest request)
+            throws NullGuessException, InvalidGuessException, InvalidGameIdException{
+        HangmanViewModel toReturn = null;
+
+        try {
+            toReturn = service.makeGuess(request.getId(), request.getGuess());
+        } catch (NullGuessException | InvalidGuessException | InvalidGameIdException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @PostMapping("/begin")
+    public ResponseEntity startNewGame() {
+        HangmanViewModel newGame = null;
+        try {
+            newGame = service.startGame();
+        } catch (InvalidGameIdException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+
+        return ResponseEntity.ok(newGame);
+    }
+
+    @DeleteMapping("/delete/{gameId}")
+    public String deleteGame( @PathVariable Integer gameId ){
+        try {
+            service.deleteGame( gameId );
+            return "Game " + gameId + " successfully deleted.";
+        } catch (InvalidGameIdException e) {
+            return e.getMessage();
+        }
+
     }
 }

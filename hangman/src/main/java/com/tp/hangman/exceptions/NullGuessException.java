@@ -1,4 +1,4 @@
-package com.tp.hangman.services;
+package com.tp.hangman.exceptions;
 
 public class NullGuessException extends Exception {
     public NullGuessException(String msg) {

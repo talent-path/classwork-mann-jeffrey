@@ -1,5 +1,6 @@
 package com.tp.hangman.persistence;
 
+import com.tp.hangman.exceptions.InvalidGameIdException;
 import com.tp.hangman.models.HangmanGame;
 import org.springframework.stereotype.Repository;
 
@@ -10,49 +11,65 @@ import java.util.List;
 public class HangmanInMemDao implements HangmanDao {
 
     //    Map<Integer, HangmanGame> allGames;
-    public List<HangmanGame> allGames = new ArrayList<>();
+    List<HangmanGame> allGames = new ArrayList<>();
 
-    public HangmanInMemDao(){
-        int id = 1;
-        String[] words = {"classroom", "affair", "apartment", "application",
-                "procedure", "sympathy", "son", "revenue",
-                "road", "tradition", "equipment", "profession",
-                "alcohol", "person", "instruction"};
-        for (String word : words) {
-            allGames.add(new HangmanGame(word, id));
-            id++;
+    public HangmanInMemDao() {
+    }
+
+    @Override
+    public List<HangmanGame> getAllGames() {
+        List<HangmanGame> copyList = new ArrayList<>();
+        for (HangmanGame toCopy : allGames) {
+            copyList.add(new HangmanGame(toCopy));
         }
+        return copyList;
     }
 
     @Override
     public HangmanGame getGameById(Integer id) {
-//        HangmanGame toReturn = null;
-//
-//        for (HangmanGame toCheck :
-//                allGames) {
-//            if (toCheck.getId() == id) {
-//                toReturn = toCheck;
-//                break;
-//            }
-//        }
-//        return toReturn;
-
         return allGames.stream().filter(g -> g.getId().equals(id)).findFirst().orElse(null);
     }
 
-    public List<HangmanGame> getVowelGames() {
-        List<HangmanGame> toReturn = new ArrayList<>();
-
-        for (HangmanGame toCheck : allGames) {
-            String word = toCheck.getHiddenWord().toLowerCase();
-            if (word.charAt(0) == 'a' ||
-                    word.charAt(0) == 'e' ||
-                    word.charAt(0) == 'i' ||
-                    word.charAt(0) == 'o' ||
-                    word.charAt(0) == 'u') {
-                toReturn.add(toCheck);
+    @Override
+    public void updateGame(HangmanGame game) {
+        for (int i = 0; i < allGames.size(); i++) {
+            if (allGames.get(i).getId().equals(game.getId())) {
+                allGames.set(i, new HangmanGame(game));
             }
         }
-        return toReturn;
+    }
+
+    @Override
+    public int startGame(String word) {
+        int id = 0;
+
+        for (HangmanGame toCheck : allGames) {
+            if (toCheck.getId() > id) {
+                id = toCheck.getId();
+            }
+        }
+
+        id++;
+
+        HangmanGame newGame = new HangmanGame(id, word);
+        allGames.add(newGame);
+        return id;
+    }
+
+    @Override
+    public void deleteGame(Integer gameId) throws InvalidGameIdException {
+        int removeIndex = -1;
+
+        for (int i = 0; i < allGames.size(); i++) {
+            if (allGames.get(i).getId().equals(gameId)) {
+                removeIndex = i;
+                break;
+            }
+        }
+        if (removeIndex != -1) {
+            allGames.remove(removeIndex);
+        } else {
+            throw new InvalidGameIdException("Could not find game with id " + gameId + "to delete.");
+        }
     }
 }

@@ -4,32 +4,21 @@ import java.util.stream.Stream;
 
 public class Warmup {
     public static void main(String[] args) {
-        char[][] board = {
-                {'5', '3', '.', '.', '7', '.', '.', '.', '.'},
-                {'6', '.', '.', '1', '9', '5', '.', '.', '.'},
-                {'.', '9', '8', '.', '.', '.', '.', '6', '.'},
-                {'8', '.', '.', '.', '6', '.', '.', '.', '3'},
-                {'4', '.', '.', '8', '.', '3', '.', '.', '1'},
-                {'7', '.', '.', '.', '2', '.', '.', '.', '6'},
-                {'.', '6', '.', '.', '.', '.', '2', '8', '.'},
-                {'.', '.', '.', '4', '1', '9', '.', '.', '5'},
-                {'.', '.', '.', '.', '8', '.', '.', '7', '9'}};
-
-//        System.out.println("IN");
-//        for (char[] row : board) {
-//            for (char space : row) {
-//                System.out.print(space + "  ");
-//            }
-//            System.out.println();
-//        }
-        solveSudoku(board);
-//        System.out.println("OUT");
-//        for (char[] row : board) {
-//            for (char space : row) {
-//                System.out.print(space + "  ");
-//            }
-//            System.out.println();
-//        }
+        TreeNode tree = new TreeNode(10,
+                new TreeNode(5,new TreeNode(7),new TreeNode(3)),
+                new TreeNode(15, null, new TreeNode(18)));
+        TreeNode tree2 = new TreeNode(10,
+                new TreeNode(5,
+                        new TreeNode(3, new TreeNode(1), null),
+                        new TreeNode(7, new TreeNode(6), null)
+                ),
+                new TreeNode(15,
+                        new TreeNode(13),
+                        new TreeNode(18)
+                )
+        );
+        System.out.println(rangeSumBST(tree, 7, 15));
+        System.out.println(rangeSumBST(tree2, 6, 10));
     }
 
     public static boolean noTriples(int[] arr) {
@@ -294,7 +283,7 @@ public class Warmup {
     public static boolean isValidSudoku(char[][] board) {
         boolean valid = true;
         for (int row = 0; valid && row < board.length; row++) {
-            for (int col = 0; valid && col < board[i].length; col++) {
+            for (int col = 0; valid && col < board[row].length; col++) {
                 if (board[row][col] != '.') {
                     int boxTop = row / 3 * 3;
                     int boxLeft = col / 3 * 3;
@@ -303,11 +292,12 @@ public class Warmup {
                         int boxR = boxTop + i / 3;
                         int boxC = boxLeft + i % 3;
 
-                        if ( (row != boxR || col != boxC) && board[row][col] == board[boxR][boxC])
+//                        if ((row != boxR || col != boxC) && board[row][col] == board[boxR][boxC])
                     }
                 }
             }
         }
+        return valid;
     }
 
     public static void solveSudoku(char[][] board) {
@@ -338,10 +328,20 @@ public class Warmup {
     public static boolean checkSolved(char[][] board) {
         boolean solved = true;
         for (int row = 0; solved && row < board.length; row++) {
-            for (int col = 0;solved && col < board[row].length; col++) {
+            for (int col = 0; solved && col < board[row].length; col++) {
                 if (board[row][col] == '.') solved = false;
             }
         }
         return solved;
+    }
+
+    public static int rangeSumBST(TreeNode root, int low, int high) {
+        int sum = 0;
+        if (root.val >= low && root.val <= high) {
+            sum += root.val;
+        }
+        if (root.left != null && root.val >= low) sum += rangeSumBST(root.left, low, high);
+        if (root.right !=null && root.val <= high) sum += rangeSumBST(root.right, low, high);
+        return sum;
     }
 }

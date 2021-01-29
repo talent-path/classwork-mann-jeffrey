@@ -3,6 +3,7 @@ package com.tp.hangman.services;
 import com.tp.hangman.exceptions.InvalidGameIdException;
 import com.tp.hangman.exceptions.InvalidGuessException;
 import com.tp.hangman.exceptions.NullGuessException;
+import com.tp.hangman.exceptions.NullWordException;
 import com.tp.hangman.models.HangmanGame;
 import com.tp.hangman.models.HangmanViewModel;
 import com.tp.hangman.persistence.HangmanDao;
@@ -112,22 +113,17 @@ public class HangmanService {
         return toReturn;
     }
 
-    public HangmanViewModel startGame() throws InvalidGameIdException{
+    public HangmanViewModel startGame() throws InvalidGameIdException, NullWordException {
         //1. make new HangmanGame
         //2. insert game into dao
         //3. get back id from dao
         String gameWord = possibleWords[RNG.rollDice(possibleWords.length - 1)];
         int newGameId = dao.startGame(gameWord);
 
-        HangmanViewModel newGame = this.getGameById(newGameId);
-        if (newGame == null) {
-            throw new InvalidGameIdException("Something's gone wrong...");
-        }
-
-        return newGame;
+        return this.getGameById(newGameId);
     }
 
     public void deleteGame(Integer gameId) throws InvalidGameIdException {
-        dao.deleteGame( gameId );
+        dao.deleteGame(gameId);
     }
 }

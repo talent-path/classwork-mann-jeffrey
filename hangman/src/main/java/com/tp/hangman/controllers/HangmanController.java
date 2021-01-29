@@ -3,6 +3,7 @@ package com.tp.hangman.controllers;
 import com.tp.hangman.exceptions.InvalidGameIdException;
 import com.tp.hangman.exceptions.InvalidGuessException;
 import com.tp.hangman.exceptions.NullGuessException;
+import com.tp.hangman.exceptions.NullWordException;
 import com.tp.hangman.models.HangmanViewModel;
 import com.tp.hangman.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class HangmanController {
         HangmanViewModel newGame = null;
         try {
             newGame = service.startGame();
-        } catch (InvalidGameIdException ex) {
+        } catch (InvalidGameIdException | NullWordException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
 

@@ -1,6 +1,7 @@
 package com.tp.hangman.persistence;
 
 import com.tp.hangman.exceptions.InvalidGameIdException;
+import com.tp.hangman.exceptions.NullWordException;
 import com.tp.hangman.models.HangmanGame;
 import org.springframework.stereotype.Repository;
 
@@ -11,9 +12,11 @@ import java.util.List;
 public class HangmanInMemDao implements HangmanDao {
 
     //    Map<Integer, HangmanGame> allGames;
-    List<HangmanGame> allGames = new ArrayList<>();
+    private List<HangmanGame> allGames = new ArrayList<>();
 
     public HangmanInMemDao() {
+        HangmanGame onlyGame = new HangmanGame(0, "zebra");
+        allGames.add(onlyGame);
     }
 
     @Override
@@ -40,7 +43,8 @@ public class HangmanInMemDao implements HangmanDao {
     }
 
     @Override
-    public int startGame(String word) {
+    public int startGame(String word) throws NullWordException {
+        if (word == null) throw new NullWordException("Tried to start game with null word");
         int id = 0;
 
         for (HangmanGame toCheck : allGames) {
@@ -69,7 +73,7 @@ public class HangmanInMemDao implements HangmanDao {
         if (removeIndex != -1) {
             allGames.remove(removeIndex);
         } else {
-            throw new InvalidGameIdException("Could not find game with id " + gameId + "to delete.");
+            throw new InvalidGameIdException("Could not find game with id " + gameId + " to delete.");
         }
     }
 }

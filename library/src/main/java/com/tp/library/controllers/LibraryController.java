@@ -25,8 +25,8 @@ public class LibraryController {
         Book toReturn = null;
         try {
             toReturn = service.getBookById(id);
-        } catch (InvalidBookIdException | NullArgumentException e) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (InvalidBookIdException | NullArgumentException ex) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
         return ResponseEntity.ok(toReturn);
     }
@@ -36,8 +36,8 @@ public class LibraryController {
         List<Book> toReturn = null;
         try {
             toReturn = service.getAllBooksByTitle(title);
-        } catch (InvalidTitleException | NullArgumentException e) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (InvalidTitleException | NullArgumentException ex) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
         return ResponseEntity.ok(toReturn);
     }
@@ -47,8 +47,8 @@ public class LibraryController {
         List<Book> toReturn = null;
         try {
             toReturn = service.getAllBooksByAuthor(author);
-        } catch (InvalidAuthorsException | NullArgumentException e) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (InvalidAuthorsException | NullArgumentException ex) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
         return ResponseEntity.ok(toReturn);
     }
@@ -58,8 +58,8 @@ public class LibraryController {
         List<Book> toReturn = null;
         try {
             toReturn = service.getAllBooksByPublicationYear(year);
-        } catch (InvalidPublicationYearException | NullArgumentException e) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (InvalidPublicationYearException | NullArgumentException ex) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
         return ResponseEntity.ok(toReturn);
     }
@@ -78,7 +78,15 @@ public class LibraryController {
     }
 
     @PutMapping("/book/edit/{id}")
-    public ResponseEntity editBook(@RequestBody EditBookRequest bookEdit) {
-        
+    public ResponseEntity editBook(@PathVariable Integer id, @RequestBody EditBookRequest bookEdit) {
+        Book edited = null;
+        try {
+            edited = service.editBook(id, bookEdit.title, bookEdit.authors, bookEdit.publicationYear);
+        } catch (InvalidBookIdException | NullArgumentException
+                | InvalidTitleException | InvalidPublicationYearException
+                | InvalidAuthorsException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.ok(edited);
     }
 }

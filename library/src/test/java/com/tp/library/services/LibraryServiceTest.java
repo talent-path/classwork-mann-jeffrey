@@ -447,7 +447,65 @@ public class LibraryServiceTest {
     }
 
     @Test
-    public void editBookTest() {
+    public void editBookTestGoldenPath()
+            throws InvalidPublicationYearException, NullArgumentException,
+            InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
+        List<String> authors = Stream.of("test1", "test2", "test3").collect(Collectors.toList());
+        Book testBook = service.createBook("Test", authors, 1990);
+        try {
+            authors.add("test4");
+            Book edited = service.editBook(testBook.getId(), "Test 1000", authors, 1900);
 
+            assertEquals("Test 1000", edited.getTitle());
+            assertEquals("test4", edited.getAuthors().get(3));
+            assertEquals(1900, edited.getPublicationYear());
+            assertEquals(testBook.getId(), edited.getId());
+        } catch (NullArgumentException | InvalidTitleException
+                | InvalidAuthorsException | InvalidPublicationYearException
+                | InvalidBookIdException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void editBookTestNullTitle()
+            throws InvalidPublicationYearException, NullArgumentException,
+            InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
+        List<String> authors = Stream.of("test1", "test2", "test3").collect(Collectors.toList());
+        Book testBook = service.createBook("Test", authors, 1990);
+        try {
+            authors.add("test4");
+            Book edited = service.editBook(testBook.getId(), null, authors, 1900);
+
+            assertEquals(testBook.getTitle(), edited.getTitle());
+            assertEquals("test4", edited.getAuthors().get(3));
+            assertEquals(1900, edited.getPublicationYear());
+            assertEquals(testBook.getId(), edited.getId());
+        } catch (NullArgumentException | InvalidTitleException
+                | InvalidAuthorsException | InvalidPublicationYearException
+                | InvalidBookIdException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void editBookTestNullAuthors()
+            throws InvalidPublicationYearException, NullArgumentException,
+            InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
+        List<String> authors = Stream.of("test1", "test2", "test3").collect(Collectors.toList());
+        Book testBook = service.createBook("Test", authors, 1990);
+        try {
+            authors.add("test4");
+            Book edited = service.editBook(testBook.getId(), "Test 1000", null, 1900);
+
+            assertEquals("Test 1000", edited.getTitle());
+            assertEquals("test4", edited.getAuthors().get(3));
+            assertEquals(1900, edited.getPublicationYear());
+            assertEquals(testBook.getId(), edited.getId());
+        } catch (NullArgumentException | InvalidTitleException
+                | InvalidAuthorsException | InvalidPublicationYearException
+                | InvalidBookIdException ex) {
+            fail();
+        }
     }
 }

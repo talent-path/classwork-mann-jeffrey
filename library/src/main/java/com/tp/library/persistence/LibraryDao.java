@@ -23,4 +23,6 @@ public interface LibraryDao {
     List<Book> getAllBooksByAuthor(String author) throws NullArgumentException, InvalidAuthorsException;
 
     List<Book> getAllBooksByPublicationYear(Integer year) throws NullArgumentException, InvalidPublicationYearException;
+
+    Book editBook(Integer id, String title, List<String> authors, Integer publicationYear) throws NullArgumentException, InvalidTitleException, InvalidAuthorsException, InvalidPublicationYearException, InvalidBookIdException;
 }

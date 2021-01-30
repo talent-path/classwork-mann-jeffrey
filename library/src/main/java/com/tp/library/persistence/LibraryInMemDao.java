@@ -134,4 +134,28 @@ public class LibraryInMemDao implements LibraryDao{
         if (year < 0 || year > 2500) throw new InvalidPublicationYearException("Tried to find books with publication year out of range");
         return allBooks.stream().filter(b -> b.getPublicationYear().equals(year)).collect(Collectors.toList());
     }
+
+    @Override
+    public Book editBook(Integer id, String title, List<String> authors, Integer publicationYear)
+            throws NullArgumentException, InvalidTitleException,
+            InvalidAuthorsException, InvalidPublicationYearException, InvalidBookIdException {
+        if (id == null) throw new NullArgumentException("Tried to edit book with Null id");
+        if (title == null) throw new NullArgumentException("Tried to edit book with Null title");
+        if (authors == null) throw new NullArgumentException("Tried to edit book with Null authors list");
+        if (publicationYear == null) throw new NullArgumentException("Tried to edit book with Null publication year");
+
+        if (title.equals("")) throw new InvalidTitleException("Tried to edit title with an empty string");
+        if (authors.isEmpty()) throw new InvalidAuthorsException("Tried to edit authors with an empty list");
+        if (authors.contains(null)) throw new InvalidAuthorsException("Tried to edit authors with an empty string");
+        if (authors.contains("")) throw new InvalidAuthorsException("Tried to edit authors with a Null author");
+        if (publicationYear < 0) throw new InvalidPublicationYearException("Cannot change title to an empty string");
+        if (publicationYear > 2500) throw new InvalidPublicationYearException("Cannot change title to an empty string");
+
+        Book toEdit = getBookById(id);
+        toEdit.setTitle(title);
+        toEdit.setAuthors(authors);
+        toEdit.setPublicationYear(publicationYear);
+
+        return toEdit;
+    }
 }

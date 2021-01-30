@@ -45,4 +45,14 @@ public class LibraryService {
     public List<Book> getAllBooksByPublicationYear(Integer year) throws NullArgumentException, InvalidPublicationYearException {
         return dao.getAllBooksByPublicationYear(year);
     }
+
+    public Book editBook(Integer id, String title, List<String> authors, Integer publicationYear)
+            throws InvalidBookIdException, NullArgumentException,
+            InvalidTitleException, InvalidPublicationYearException, InvalidAuthorsException {
+        if (id == null) throw new NullArgumentException("Tried to edit book with Null id");
+        if (title == null) title = dao.getBookById(id).getTitle();
+        if (authors == null) authors = dao.getBookById(id).getAuthors();
+        if (publicationYear == null) publicationYear = dao.getBookById(id).getPublicationYear();
+        return dao.editBook(id, title, authors, publicationYear);
+    }
 }

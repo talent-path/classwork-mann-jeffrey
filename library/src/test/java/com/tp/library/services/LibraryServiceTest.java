@@ -32,7 +32,7 @@ public class LibraryServiceTest {
     public void createBookTestGoldenPath() {
         // createBook( String title, String[] authors, Integer publicationDate );
         try {
-            List<String> firstAuthors = Stream.of("test1", "test2").collect(Collectors.toList());
+            List<String> firstAuthors = Stream.of("test1", "test 2").collect(Collectors.toList());
             Book firstTestBook = service.createBook("Test", firstAuthors, 1993);
             Book firstValidation = service.getBookById(1);
 
@@ -72,7 +72,7 @@ public class LibraryServiceTest {
 
     @Test
     public void createBookTestNullTitle() {
-        List<String> firstAuthors = Stream.of("test1", "test2").collect(Collectors.toList());
+        List<String> firstAuthors = Stream.of("test1", "test 2").collect(Collectors.toList());
         Exception e = assertThrows(NullArgumentException.class, () -> {
             service.createBook(null, firstAuthors, 1993);
         });
@@ -95,7 +95,7 @@ public class LibraryServiceTest {
 
     @Test
     public void createBookTestNullPublicationYear() {
-        List<String> firstAuthors = Stream.of("test1", "test2").collect(Collectors.toList());
+        List<String> firstAuthors = Stream.of("test1", "test 2").collect(Collectors.toList());
         Exception e = assertThrows(NullArgumentException.class, () -> {
             service.createBook("Test", firstAuthors, null);
         });
@@ -107,7 +107,7 @@ public class LibraryServiceTest {
 
     @Test
     public void createBookTestEmptyTitle() {
-        List<String> firstAuthors = Stream.of("test1", "test2").collect(Collectors.toList());
+        List<String> firstAuthors = Stream.of("test1", "test 2").collect(Collectors.toList());
         Exception e = assertThrows(InvalidTitleException.class, () -> {
             service.createBook("", firstAuthors, 1993);
         });
@@ -132,7 +132,7 @@ public class LibraryServiceTest {
     @Test
     public void createBookTestEmptyAuthorInAuthors() {
         // Arrange
-        List<String> firstAuthors = Stream.of("test", "test1", "").collect(Collectors.toList());
+        List<String> firstAuthors = Stream.of("test", "test 1", "").collect(Collectors.toList());
         // Assert
         Exception e1 = assertThrows(InvalidAuthorsException.class, () -> {
             //Act
@@ -185,8 +185,36 @@ public class LibraryServiceTest {
     }
 
     @Test
+    public void createBookTestBlankAuthorInAuthors() {
+        // Arrange
+        List<String> firstAuthors = Stream.of("test", "test 1", "     ").collect(Collectors.toList());
+        // Assert
+        Exception e1 = assertThrows(InvalidAuthorsException.class, () -> {
+            //Act
+            service.createBook("Test", firstAuthors, 1993);
+        });
+
+        // Arrange
+        List<String> secondAuthors = Stream.of("test", "test 1", "test3").collect(Collectors.toList());
+        secondAuthors.add("    ");
+        // Assert
+        Exception e2 = assertThrows(InvalidAuthorsException.class, () -> {
+            //Act
+            service.createBook("Test", secondAuthors, 1993);
+        });
+
+
+        String expectedMsg = "Tried to create book with blank author in authors list";
+        String actualMsg1 = e1.getMessage();
+        String actualMsg2 = e2.getMessage();
+
+        assertEquals(expectedMsg, actualMsg1);
+        assertEquals(expectedMsg, actualMsg2);
+    }
+
+    @Test
     public void createBookTestYearOutOfRangeMin() {
-        List<String> authors = Stream.of("test1", "test2").collect(Collectors.toList());
+        List<String> authors = Stream.of("test1", "test 2").collect(Collectors.toList());
         Exception e = assertThrows(InvalidPublicationYearException.class, () -> {
             service.createBook("Test", authors, -1);
         });
@@ -199,7 +227,7 @@ public class LibraryServiceTest {
 
     @Test
     public void createBookTestYearOutOfRangeMax() {
-        List<String> authors = Stream.of("test1", "test2").collect(Collectors.toList());
+        List<String> authors = Stream.of("test1", "test 2").collect(Collectors.toList());
         Exception e = assertThrows(InvalidPublicationYearException.class, () -> {
             service.createBook("Test", authors, Integer.MAX_VALUE);
         });
@@ -238,8 +266,8 @@ public class LibraryServiceTest {
             throws NullArgumentException, InvalidTitleException,
             InvalidAuthorsException, InvalidPublicationYearException, InvalidBookIdException {
         String testTitle = "Test";
-        List<String> authors1 = Stream.of("test1", "test2").collect(Collectors.toList());
-        List<String> authors2 = Stream.of("test3", "test4").collect(Collectors.toList());
+        List<String> authors1 = Stream.of("test1", "test 2").collect(Collectors.toList());
+        List<String> authors2 = Stream.of("test3", "test 4").collect(Collectors.toList());
         Book testBook1 = service.createBook(testTitle, authors1, 1990);
         Book testBook2 = service.createBook(testTitle, authors2, 1980);
         Book notIncludedBook = service.createBook("Different Title", authors1, 1970);
@@ -298,8 +326,8 @@ public class LibraryServiceTest {
             throws NullArgumentException, InvalidTitleException,
             InvalidAuthorsException, InvalidPublicationYearException, InvalidBookIdException {
         String testAuthor = "test";
-        List<String> authors = Stream.of("test", "test1", "test2").collect(Collectors.toList());
-        List<String> differentAuthors = Stream.of("test3", "test4", "test5").collect(Collectors.toList());
+        List<String> authors = Stream.of("test", "test 1", "test2").collect(Collectors.toList());
+        List<String> differentAuthors = Stream.of("test3", "test 4", "test5").collect(Collectors.toList());
         Book testBook1 = service.createBook("Test", authors, 1990);
         Book testBook2 = service.createBook("Test 2", authors, 1980);
         Book testBook3 = service.createBook("Test 3", differentAuthors, 1970);
@@ -355,7 +383,7 @@ public class LibraryServiceTest {
             throws NullArgumentException, InvalidTitleException,
             InvalidAuthorsException, InvalidPublicationYearException, InvalidBookIdException {
         Integer testYear = 1990;
-        List<String> authors = Stream.of("test", "test1", "test2").collect(Collectors.toList());
+        List<String> authors = Stream.of("test", "test 1", "test2").collect(Collectors.toList());
         Book testBook1 = service.createBook("Test", authors, testYear);
         Book testBook2 = service.createBook("Test 2", authors, testYear);
         Book testBook3 = service.createBook("Test 3", authors, 1985);
@@ -421,7 +449,7 @@ public class LibraryServiceTest {
     public void getBookByIdTestGoldenPath()
             throws NullArgumentException, InvalidTitleException,
             InvalidAuthorsException, InvalidPublicationYearException, InvalidBookIdException {
-        List<String> authors = Stream.of("test 1", "test 2", "test 3").collect(Collectors.toList());
+        List<String> authors = Stream.of("test1", "test 2", "test3").collect(Collectors.toList());
         Book testBook = service.createBook("Test", authors, 1990);
         try {
             Book toTest = service.getBookById(1);
@@ -458,7 +486,7 @@ public class LibraryServiceTest {
     public void deleteBookByIdTestGoldenPath()
             throws NullArgumentException, InvalidTitleException,
             InvalidAuthorsException, InvalidPublicationYearException, InvalidBookIdException {
-        List<String> authors = Stream.of("test1", "test2").collect(Collectors.toList());
+        List<String> authors = Stream.of("test1", "test 2").collect(Collectors.toList());
         Book testBook = service.createBook("Test", authors, 1990);
         try {
             int deletedId = service.deleteBook(testBook.getId());
@@ -495,7 +523,7 @@ public class LibraryServiceTest {
     public void editBookTestGoldenPath()
             throws InvalidPublicationYearException, NullArgumentException,
             InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
-        List<String> authors = Stream.of("test1", "test2", "test3").collect(Collectors.toList());
+        List<String> authors = Stream.of("test1", "test 2", "test3").collect(Collectors.toList());
         Book testBook = service.createBook("Test", authors, 1990);
         try {
             authors.add("test4");
@@ -516,7 +544,7 @@ public class LibraryServiceTest {
     public void editBookTestNullTitle()
             throws InvalidPublicationYearException, NullArgumentException,
             InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
-        List<String> authors = Stream.of("test1", "test2", "test3").collect(Collectors.toList());
+        List<String> authors = Stream.of("test1", "test 2", "test3").collect(Collectors.toList());
         Book testBook = service.createBook("Test", authors, 1990);
         try {
             authors.add("test4");
@@ -537,7 +565,7 @@ public class LibraryServiceTest {
     public void editBookTestNullAuthors()
             throws InvalidPublicationYearException, NullArgumentException,
             InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
-        List<String> authors = Stream.of("test1", "test2", "test3").collect(Collectors.toList());
+        List<String> authors = Stream.of("test1", "test 2", "test3").collect(Collectors.toList());
         Book testBook = service.createBook("Test", authors, 1990);
         try {
             Book edited = service.editBook(testBook.getId(), "Test 1000", null, 1900);
@@ -557,7 +585,7 @@ public class LibraryServiceTest {
     public void editBookTestNullPublicationYear()
             throws InvalidPublicationYearException, NullArgumentException,
             InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
-        List<String> authors = Stream.of("test1", "test2", "test3").collect(Collectors.toList());
+        List<String> authors = Stream.of("test1", "test 2", "test3").collect(Collectors.toList());
         Book testBook = service.createBook("Test", authors, 1990);
         try {
             authors.add("test4");

@@ -4,21 +4,8 @@ import java.util.stream.Stream;
 
 public class Warmup {
     public static void main(String[] args) {
-        TreeNode tree = new TreeNode(10,
-                new TreeNode(5,new TreeNode(7),new TreeNode(3)),
-                new TreeNode(15, null, new TreeNode(18)));
-        TreeNode tree2 = new TreeNode(10,
-                new TreeNode(5,
-                        new TreeNode(3, new TreeNode(1), null),
-                        new TreeNode(7, new TreeNode(6), null)
-                ),
-                new TreeNode(15,
-                        new TreeNode(13),
-                        new TreeNode(18)
-                )
-        );
-        System.out.println(rangeSumBST(tree, 7, 15));
-        System.out.println(rangeSumBST(tree2, 6, 10));
+        System.out.println(search(new int[]{-1,0,3,5,9,12}, 9));
+        System.out.println(search(new int[]{-1,0,3,5,9,12}, 6));
     }
 
     public static boolean noTriples(int[] arr) {
@@ -341,7 +328,75 @@ public class Warmup {
             sum += root.val;
         }
         if (root.left != null && root.val >= low) sum += rangeSumBST(root.left, low, high);
-        if (root.right !=null && root.val <= high) sum += rangeSumBST(root.right, low, high);
+        if (root.right != null && root.val <= high) sum += rangeSumBST(root.right, low, high);
         return sum;
+    }
+
+    public static ListNode reverseList(ListNode head) {
+        if (head == null) return null;
+
+
+        ListNode prev = null;
+        ListNode current = head;
+        ListNode next = null;
+
+        while (current != null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        head = prev;
+
+        return head;
+    }
+
+    public int search(int[] nums, int target) {
+//         int index = -1;
+//         boolean found = false;
+//         int startingIndex = nums.length / 2;
+//         int endingIndex = nums.length - 1;
+
+//         while (!found || startingIndex == endingIndex) {
+//             if (nums[startingIndex] > target) {
+//                 endingIndex = startingIndex;
+//                 startingIndex = endingIndex / 2;
+//                 found = false;
+//             } else if (nums[startingIndex] < target) {
+//                 startingIndex = (startingIndex + endingIndex + 1) / 2;
+//                 found = false;
+//             } else {
+//                 index = startingIndex;
+//                 found = true;
+//             }
+//         }
+
+//         return index;
+
+//         int min = 0;
+//         int max = nums.length - 1;
+
+//         while (min <= max) {
+//             int mid = (min + max) / 2;
+//             if (nums[mid] == target) {
+//                 return mid;
+//             } else if (nums[mid] < target) {
+//                 min = mid + 1;
+//             } else {
+//                 max = mid -1;
+//             }
+//         }
+
+//         return -1;
+        return binarySearch(nums, target, 0, nums.length-1);
+    }
+
+    private int binarySearch(int[] nums, int target, int min, int max) {
+        if (min > max) return -1;
+        int mid = (min + max) / 2;
+
+        if (nums[mid] == target) return mid;
+        else if (nums[mid] < target) return binarySearch(nums, target, mid+1, max);
+        else return binarySearch(nums, target, min, mid-1);
     }
 }

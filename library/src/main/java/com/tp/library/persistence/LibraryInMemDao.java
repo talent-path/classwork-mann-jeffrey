@@ -59,10 +59,13 @@ public class LibraryInMemDao implements LibraryDao {
     }
 
     @Override
-    public Book getBookById(Integer id) throws NullArgumentException {
+    public Book getBookById(Integer id) throws NullArgumentException, InvalidBookIdException {
         if (id == null) throw new NullArgumentException("Tried to find book by Null id");
 
         Book toReturn = allBooks.stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
+        if (toReturn == null) {
+            throw new InvalidBookIdException(String.format("No book with the id: %d", id));
+        }
         return new Book(toReturn);
     }
 
@@ -120,7 +123,7 @@ public class LibraryInMemDao implements LibraryDao {
 
     @Override
     public Book editBook(Integer id, String title, List<String> authors, Integer publicationYear)
-            throws NullArgumentException {
+            throws NullArgumentException, InvalidBookIdException {
         if (id == null) throw new NullArgumentException("Tried to edit book with Null id");
         if (title == null) throw new NullArgumentException("Tried to edit book with Null title");
         if (authors == null) throw new NullArgumentException("Tried to edit book with Null authors list");

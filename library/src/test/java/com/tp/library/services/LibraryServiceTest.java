@@ -34,6 +34,7 @@ public class LibraryServiceTest {
         try {
             List<String> firstAuthors = Stream.of("test1", "test2").collect(Collectors.toList());
             Book firstTestBook = service.createBook("Test", firstAuthors, 1993);
+            Book firstValidation = service.getBookById(1);
 
             assertEquals(1, firstTestBook.getId());
             assertEquals("test1", firstTestBook.getAuthors().get(0));
@@ -41,14 +42,27 @@ public class LibraryServiceTest {
             assertFalse(firstTestBook.getAuthors().isEmpty());
             assertEquals(1993, firstTestBook.getPublicationYear());
 
+            assertEquals(1, firstValidation.getId());
+            assertEquals("test1", firstValidation.getAuthors().get(0));
+            assertNotNull(firstValidation.getAuthors());
+            assertFalse(firstValidation.getAuthors().isEmpty());
+            assertEquals(1993, firstValidation.getPublicationYear());
+
             List<String> secondAuthors = Stream.of("test3", "test4").collect(Collectors.toList());
             Book secondTestBook = service.createBook("Test 2", secondAuthors, 1986);
+            Book secondValidation = service.getBookById(2);
 
             assertEquals(2, secondTestBook.getId());
             assertEquals("test3", secondTestBook.getAuthors().get(0));
             assertNotNull(secondTestBook.getAuthors());
             assertFalse(secondTestBook.getAuthors().isEmpty());
             assertEquals(1986, secondTestBook.getPublicationYear());
+
+            assertEquals(2, secondValidation.getId());
+            assertEquals("test3", secondValidation.getAuthors().get(0));
+            assertNotNull(secondValidation.getAuthors());
+            assertFalse(secondValidation.getAuthors().isEmpty());
+            assertEquals(1986, secondValidation.getPublicationYear());
         } catch (NullArgumentException | InvalidTitleException
                 | InvalidAuthorsException | InvalidPublicationYearException
                 | InvalidBookIdException ex) {
@@ -116,7 +130,7 @@ public class LibraryServiceTest {
     }
 
     @Test
-    public void createBookTestBlankAuthorInAuthors() {
+    public void createBookTestEmptyAuthorInAuthors() {
         // Arrange
         List<String> firstAuthors = Stream.of("test", "test1", "").collect(Collectors.toList());
         // Assert
@@ -206,8 +220,17 @@ public class LibraryServiceTest {
 
         assertNotNull(allBooks);
         assertFalse(allBooks.isEmpty());
+        assertEquals(2, allBooks.size());
+
         assertEquals(book1.getId(), allBooks.get(0).getId());
+        assertEquals("Test", allBooks.get(0).getTitle());
+        assertEquals("test1", allBooks.get(0).getAuthors().get(0));
+        assertEquals(1998, allBooks.get(0).getPublicationYear());
+
         assertEquals(book2.getId(), allBooks.get(1).getId());
+        assertEquals("Test 2", allBooks.get(1).getTitle());
+        assertEquals("test1", allBooks.get(1).getAuthors().get(0));
+        assertEquals(1988, allBooks.get(1).getPublicationYear());
     }
 
     @Test
@@ -219,15 +242,30 @@ public class LibraryServiceTest {
         List<String> authors2 = Stream.of("test3", "test4").collect(Collectors.toList());
         Book testBook1 = service.createBook(testTitle, authors1, 1990);
         Book testBook2 = service.createBook(testTitle, authors2, 1980);
+        Book notIncludedBook = service.createBook("Different Title", authors1, 1970);
+
         try {
             List<Book> booksByTitle = service.getAllBooksByTitle(testTitle);
+            List<Integer> ids = booksByTitle.stream().map(Book::getId).collect(Collectors.toList());
 
             assertNotNull(booksByTitle);
             assertFalse(booksByTitle.isEmpty());
+
+            assertTrue(ids.contains(testBook1.getId()));
             assertEquals(testBook1.getId(), booksByTitle.get(0).getId());
             assertEquals(testTitle, booksByTitle.get(0).getTitle());
+            assertEquals("test1", booksByTitle.get(0).getAuthors().get(0));
+            assertEquals(1990, booksByTitle.get(0).getPublicationYear());
+
             assertEquals(testBook2.getId(), booksByTitle.get(1).getId());
             assertEquals(testTitle, booksByTitle.get(1).getTitle());
+            assertTrue(ids.contains(testBook2.getId()));
+            assertEquals(testBook2.getId(), booksByTitle.get(1).getId());
+            assertEquals(testTitle, booksByTitle.get(1).getTitle());
+            assertEquals("test3", booksByTitle.get(1).getAuthors().get(0));
+            assertEquals(1980, booksByTitle.get(1).getPublicationYear());
+
+            assertFalse(ids.contains(notIncludedBook.getId()));
         } catch (NullArgumentException | InvalidTitleException ex) {
             fail();
         }
@@ -255,7 +293,6 @@ public class LibraryServiceTest {
         assertEquals(expectedMsg, actualMsg);
     }
 
-
     @Test
     public void getAllBooksByAuthorTestGoldenPath()
             throws NullArgumentException, InvalidTitleException,
@@ -276,10 +313,14 @@ public class LibraryServiceTest {
             assertTrue(ids.contains(testBook1.getId()));
             assertEquals(testBook1.getAuthors().get(0), booksByAuthor.get(0).getAuthors().get(0));
             assertEquals(testAuthor, booksByAuthor.get(0).getAuthors().get(0));
+            assertEquals("Test", booksByAuthor.get(0).getTitle());
+            assertEquals(1990, booksByAuthor.get(0).getPublicationYear());
 
             assertTrue(ids.contains(testBook2.getId()));
             assertEquals(testBook2.getAuthors().get(0), booksByAuthor.get(1).getAuthors().get(0));
             assertEquals(testAuthor, booksByAuthor.get(1).getAuthors().get(0));
+            assertEquals("Test 2", booksByAuthor.get(1).getTitle());
+            assertEquals(1980, booksByAuthor.get(1).getPublicationYear());
 
             assertFalse(ids.contains(testBook3.getId()));
         } catch (NullArgumentException | InvalidAuthorsException ex) {
@@ -328,10 +369,14 @@ public class LibraryServiceTest {
             assertTrue(ids.contains(testBook1.getId()));
             assertEquals(testBook1.getPublicationYear(), booksByPublicationYear.get(0).getPublicationYear());
             assertEquals(testYear, booksByPublicationYear.get(0).getPublicationYear());
+            assertEquals("Test", booksByPublicationYear.get(0).getTitle());
+            assertEquals("test", booksByPublicationYear.get(0).getAuthors().get(0));
 
             assertTrue(ids.contains(testBook2.getId()));
             assertEquals(testBook2.getPublicationYear(), booksByPublicationYear.get(1).getPublicationYear());
             assertEquals(testYear, booksByPublicationYear.get(1).getPublicationYear());
+            assertEquals("Test 2", booksByPublicationYear.get(1).getTitle());
+            assertEquals("test", booksByPublicationYear.get(1).getAuthors().get(0));
 
             assertFalse(ids.contains(testBook3.getId()));
         } catch (NullArgumentException | InvalidPublicationYearException ex) {
@@ -351,7 +396,7 @@ public class LibraryServiceTest {
     }
 
     @Test
-    public void getAllBooksByPublicationYearTestOutofRangeMin() {
+    public void getAllBooksByPublicationYearTestOutOfRangeMin() {
         Exception e = assertThrows(InvalidPublicationYearException.class, () -> {
             service.getAllBooksByPublicationYear(-1);
         });
@@ -362,7 +407,7 @@ public class LibraryServiceTest {
     }
 
     @Test
-    public void getAllBooksByPublicationYearTestOutofRangeMax() {
+    public void getAllBooksByPublicationYearTestOutOfRangeMax() {
         Exception e = assertThrows(InvalidPublicationYearException.class, () -> {
             service.getAllBooksByPublicationYear(Integer.MAX_VALUE);
         });
@@ -495,7 +540,6 @@ public class LibraryServiceTest {
         List<String> authors = Stream.of("test1", "test2", "test3").collect(Collectors.toList());
         Book testBook = service.createBook("Test", authors, 1990);
         try {
-//            authors.add("test4");
             Book edited = service.editBook(testBook.getId(), "Test 1000", null, 1900);
 
             assertEquals("Test 1000", edited.getTitle());

@@ -10,7 +10,7 @@ import java.util.List;
 public interface LibraryDao {
 
     Integer createBook(String title, List<String> authors, Integer publicationYear)
-            throws NullArgumentException, InvalidTitleException, InvalidAuthorsException, InvalidPublicationYearException;
+            throws NullArgumentException;
 
     Book getBookById(Integer id) throws InvalidBookIdException, NullArgumentException;
 
@@ -18,11 +18,13 @@ public interface LibraryDao {
 
     Integer deleteBook(Integer id) throws InvalidBookIdException, NullArgumentException;
 
-    List<Book> getAllBooksByTitle(String title) throws NullArgumentException, InvalidTitleException;
+    List<Book> getAllBooksByTitle(String title) throws NullArgumentException;
 
-    List<Book> getAllBooksByAuthor(String author) throws NullArgumentException, InvalidAuthorsException;
+    List<Book> getAllBooksByAuthor(String author) throws NullArgumentException;
 
-    List<Book> getAllBooksByPublicationYear(Integer year) throws NullArgumentException, InvalidPublicationYearException;
+    List<Book> getAllBooksByPublicationYear(Integer year) throws NullArgumentException;
 
     Book editBook(Integer id, String title, List<String> authors, Integer publicationYear) throws NullArgumentException, InvalidTitleException, InvalidAuthorsException, InvalidPublicationYearException, InvalidBookIdException;
+
+    void updateBook(Book toEdit);
 }

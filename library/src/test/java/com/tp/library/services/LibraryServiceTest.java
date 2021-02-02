@@ -379,6 +379,17 @@ public class LibraryServiceTest {
     }
 
     @Test
+    public void getAllBooksByAuthorTestBlankAuthor() {
+        Exception e = assertThrows(InvalidAuthorsException.class, () -> {
+            service.getAllBooksByAuthor("     ");
+        });
+
+        String expectedMsg = "Tried to find books with blank author";
+        String actualMsg = e.getMessage();
+        assertEquals(expectedMsg, actualMsg);
+    }
+
+    @Test
     public void getAllBooksByPublicationYearTestGoldenPath()
             throws NullArgumentException, InvalidTitleException,
             InvalidAuthorsException, InvalidPublicationYearException, InvalidBookIdException {
@@ -579,6 +590,60 @@ public class LibraryServiceTest {
                 | InvalidBookIdException ex) {
             fail();
         }
+    }
+
+    @Test
+    public void editBookTestNullAuthorInAuthors()
+            throws InvalidPublicationYearException, NullArgumentException,
+            InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
+        List<String> authors = Stream.of("test1", "test 2", "test3").collect(Collectors.toList());
+        Book testBook = service.createBook("Test", authors, 1990);
+
+        List<String> newAuthors = new ArrayList<>(authors);
+        newAuthors.add(null);
+        Exception e = assertThrows(InvalidAuthorsException.class,
+                () -> service.editBook(testBook.getId(), "Test 1000", newAuthors, 1900));
+
+        String expectedMsg = "Tried to edit authors with a Null author";
+        String actualMsg = e.getMessage();
+
+        assertEquals(expectedMsg, actualMsg);
+    }
+
+    @Test
+    public void editBookTestEmptyAuthorInAuthors()
+            throws InvalidPublicationYearException, NullArgumentException,
+            InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
+        List<String> authors = Stream.of("test1", "test 2", "test3").collect(Collectors.toList());
+        Book testBook = service.createBook("Test", authors, 1990);
+
+        List<String> newAuthors = new ArrayList<>(authors);
+        newAuthors.add("");
+        Exception e = assertThrows(InvalidAuthorsException.class,
+                () -> service.editBook(testBook.getId(), "Test 1000", newAuthors, 1900));
+
+        String expectedMsg = "Tried to edit authors with an empty string";
+        String actualMsg = e.getMessage();
+
+        assertEquals(expectedMsg, actualMsg);
+    }
+
+    @Test
+    public void editBookTestBlankAuthorInAuthors()
+            throws InvalidPublicationYearException, NullArgumentException,
+            InvalidBookIdException, InvalidTitleException, InvalidAuthorsException {
+        List<String> authors = Stream.of("test1", "test 2", "test3").collect(Collectors.toList());
+        Book testBook = service.createBook("Test", authors, 1990);
+
+        List<String> newAuthors = new ArrayList<>(authors);
+        newAuthors.add("      ");
+        Exception e = assertThrows(InvalidAuthorsException.class,
+                () -> service.editBook(testBook.getId(), "Test 1000", newAuthors, 1900));
+
+        String expectedMsg = "Tried to edit authors with a blank author";
+        String actualMsg = e.getMessage();
+
+        assertEquals(expectedMsg, actualMsg);
     }
 
     @Test

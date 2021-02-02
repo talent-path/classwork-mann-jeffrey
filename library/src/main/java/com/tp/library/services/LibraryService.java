@@ -33,7 +33,7 @@ public class LibraryService {
         if (title.equals("")) {
             throw new InvalidTitleException("Tried to create book with empty title");
         }
-        if (title.trim().equals("")){
+        if (title.trim().equals("")) {
             throw new InvalidTitleException("Tried to create book with blank title");
         }
         if (authors.isEmpty()) {
@@ -92,6 +92,12 @@ public class LibraryService {
         if (author == null) throw new NullArgumentException("Tried to find books with Null author");
         if (author.equals("")) throw new InvalidAuthorsException("Tried to find books with empty author");
 
+        // Check for a blank author with regex!
+        boolean blanks = Pattern.compile("\\A\\s*\\z").matcher(author).matches();
+        if (blanks) {
+            throw new InvalidAuthorsException("Tried to find books with blank author");
+        }
+
         return dao.getAllBooksByAuthor(author);
     }
 
@@ -120,8 +126,18 @@ public class LibraryService {
 
         if (title.equals("")) throw new InvalidTitleException("Tried to edit title with an empty string");
         if (authors.isEmpty()) throw new InvalidAuthorsException("Tried to edit authors with an empty list");
-        if (authors.contains(null)) throw new InvalidAuthorsException("Tried to edit authors with an empty string");
-        if (authors.contains("")) throw new InvalidAuthorsException("Tried to edit authors with a Null author");
+        if (authors.contains("")) throw new InvalidAuthorsException("Tried to edit authors with an empty string");
+        if (authors.contains(null)) throw new InvalidAuthorsException("Tried to edit authors with a Null author");
+
+        // Check for a blank author with regex!
+        boolean blanks = false;
+        for (String a : authors) {
+            blanks = Pattern.compile("\\A\\s*\\z").matcher(a).matches();
+        }
+        if (blanks) {
+            throw new InvalidAuthorsException("Tried to edit authors with a blank author");
+        }
+
         if (publicationYear < 0) throw new InvalidPublicationYearException("Cannot change title to an empty string");
         if (publicationYear > 2500) throw new InvalidPublicationYearException("Cannot change title to an empty string");
 

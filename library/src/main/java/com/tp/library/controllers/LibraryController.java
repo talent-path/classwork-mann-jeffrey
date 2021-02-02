@@ -78,7 +78,7 @@ public class LibraryController {
     }
 
     @PutMapping("/book/edit/{id}")
-    public ResponseEntity editBook(@PathVariable Integer id, @RequestBody EditBookRequest bookEdit) {
+    public ResponseEntity editBook(@PathVariable Integer id, @RequestBody BookRequest bookEdit) {
         Book edited = null;
         try {
             edited = service.editBook(id, bookEdit.title, bookEdit.authors, bookEdit.publicationYear);

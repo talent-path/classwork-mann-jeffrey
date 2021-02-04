@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tp</groupId>
-	<artifactId>connectfour</artifactId>
+	<artifactId>connectFour</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>connectfour</name>
-	<description>Connect four game for Talent Path Cohort 12</description>
+	<name>connectFour</name>
+	<description>Connect 4</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

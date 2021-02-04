@@ -1,13 +1,13 @@
-package com.tp.connectfour;
+package com.tp.connectFour;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ConnectfourApplication {
+public class ConnectFourApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ConnectfourApplication.class, args);
+		SpringApplication.run(ConnectFourApplication.class, args);
 	}
 
 }

@@ -1,36 +1,50 @@
-package com.tp.connectfour.models;
+package com.tp.connectFour.models;
 
 public class Board {
-    int boardId;
-    int[][] board;
+    private Integer boardId;
+    private Integer[][] board;
 
-    public Integer getBoardId() {
-        return this.boardId;
-    }
-
-    public void setBoardId(int boardId) {
+    public void setBoardId(Integer boardId) {
         this.boardId = boardId;
     }
 
-    public int[][] getBoard() {
+    public Integer[][] getBoard() {
         return board;
     }
-    public void setBoard(int[][] board) {
+
+    public void setBoard(Integer[][] board) {
         this.board = board;
     }
 
-    public Board(Integer boardId) {
-        this.boardId = boardId;
-        board = new int[6][7];
-    }
-
-    public Board(Board that) {
-        this.boardId = that.boardId;
-        this.board = new int[6][7];
-        for (int i = 0; i < that.board.length; i++) {
-            for (int j = 0; j < that.board[i].length; j++) {
-                this.board[i][j] = that.board[i][j];
+    //creates new empty board
+    public Board(Integer gameId){
+        this.boardId = gameId;
+        board = new Integer[6][7];
+        for(int row = 0; row < 6; row++){
+            for(int col = 0; col < 7; col++){
+                this.board[row][col] = 0;
             }
         }
+    }
+
+    //update game board with a different state of board
+    public Board(Integer gameId, Integer[][] board){
+        this.boardId = gameId;
+        this.board = board;
+    }
+
+    //copy to new board and instantiate new array with that
+    public Board(Board that){
+        this.boardId = that.boardId;
+        this.board = new Integer[6][7];
+        for(int row = 0; row < 6; row++){
+            for(int col = 0; col < 7; col++){
+                this.board[row][col] = that.board[row][col];
+            }
+        }
+    }
+
+    public Integer getBoardId() {
+        return boardId;
     }
 }

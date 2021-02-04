@@ -4,8 +4,12 @@ import java.util.stream.Stream;
 
 public class Warmup {
     public static void main(String[] args) {
-        System.out.println(search(new int[]{-1,0,3,5,9,12}, 9));
-        System.out.println(search(new int[]{-1,0,3,5,9,12}, 6));
+        ListNode head = new ListNode(0);
+        head.next = new ListNode(1);
+        head.next.next = new ListNode(2);
+        head.next.next.next = new ListNode(3);
+
+        printList(swapPairs(head));
     }
 
     public static boolean noTriples(int[] arr) {
@@ -352,27 +356,7 @@ public class Warmup {
     }
 
     public int search(int[] nums, int target) {
-//         int index = -1;
-//         boolean found = false;
-//         int startingIndex = nums.length / 2;
-//         int endingIndex = nums.length - 1;
-
-//         while (!found || startingIndex == endingIndex) {
-//             if (nums[startingIndex] > target) {
-//                 endingIndex = startingIndex;
-//                 startingIndex = endingIndex / 2;
-//                 found = false;
-//             } else if (nums[startingIndex] < target) {
-//                 startingIndex = (startingIndex + endingIndex + 1) / 2;
-//                 found = false;
-//             } else {
-//                 index = startingIndex;
-//                 found = true;
-//             }
-//         }
-
-//         return index;
-
+        // iterative
 //         int min = 0;
 //         int max = nums.length - 1;
 
@@ -392,11 +376,69 @@ public class Warmup {
     }
 
     private int binarySearch(int[] nums, int target, int min, int max) {
+        //recursive
         if (min > max) return -1;
         int mid = (min + max) / 2;
 
         if (nums[mid] == target) return mid;
         else if (nums[mid] < target) return binarySearch(nums, target, mid+1, max);
         else return binarySearch(nums, target, min, mid-1);
+    }
+
+    public static boolean hasCycle(ListNode head) {
+//        Set<ListNode> seen = new HashSet<>();
+//        boolean cycle = false;
+//
+//        ListNode temp = head;
+//        while (temp != null && !cycle) {
+//            cycle = !seen.add(temp);
+//            temp = temp.next;
+//        }
+//
+//        return cycle;
+
+        ListNode one = head;
+        ListNode two = head.next;
+
+        while(two != null && two.next != null) {
+            if (one == two) {
+                return true;
+            }
+            two = two.next.next;
+            one = one.next;
+        }
+        return false;
+    }
+
+    public static ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) return head;
+        ListNode prev = head;
+        ListNode curr = head.next;
+
+        head = curr;
+
+        while (true) {
+            ListNode next = curr.next;
+            curr.next = prev;
+
+            if (next == null || next.next == null) {
+                prev.next = next;
+                break;
+            }
+
+            prev.next = next.next;
+
+            prev = next;
+            curr = prev.next;
+        }
+        return head;
+    }
+
+    public static void printList(ListNode node)
+    {
+        while (node != null) {
+            System.out.print(node.val + " ");
+            node = node.next;
+        }
     }
 }

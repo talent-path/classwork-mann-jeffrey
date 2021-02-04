@@ -1,0 +1,193 @@
+Restaurant Schema
+
+##tables##
+
+menus			eg(breakfast/lunch/dinner)
+	* id 			serial			PK
+	* name 			varchar			NOT NULL
+	* startTime		time 			NULL
+	* endTime 		time 			NULL
+
+menuFoodItems 	(bridge table)
+	* foodItemId 	foodItemId  PK
+	* menuId 		menuId 		FK, NOT NULL
+	* price			numeric		NOT NULL
+
+foodItems		eg(hamburger/hotdog/etc)
+	* id 				serial 			PK
+	* name 				varchar			NOT NULL
+
+recipes			eg(hamburger preperation/hotdog preperation)
+	* id 				serial 			PK
+	* name 				varchar 		NOT NULL
+	* directions 		text			NOT NULL
+	* description 		text			NULL
+	* prep time 		numeric			NULL
+	* reviews/rating 	numeric			NULL
+	* foodItemId 		foodItemId		FK, NOT NULL
+
+recipeIngredients (bridge table)
+	* recipeId 			recipeId 		FK
+	* ingredientId 		ingredientId	FK 
+
+recipeEquipment (bridge table)
+	* recipedId 		recipeId 		PK, FK
+	* equipmentId 		equipmentId		PK, FK
+
+ingredients 	eg(meat patty/buns/etc)
+	* id 				serial			PK
+	* name 				varchar			NOT NULL
+	* cost 				numeric			NOT NULL
+	* calories 			numeric			NULL
+	* quantity 			numeric			NOT NULL
+	* storage 			enum/numeric 	NULL
+		* FREEZER
+		* FRIDGE
+		* DRY
+		* HERMETIC
+	* vegan 			boolean			NULL
+	* shelfLife/expDate numeric/timestamp/date 		NULL
+
+suppliers
+	* id 			serial			PK
+	* name			varchar			NOTNULL
+	* address		varchar			NOTNULL
+	* contact		varchar			NOTNULL
+
+supplierIngredients (or shipments?)
+	* supplierId 		serial			FK
+	* ingredientId		serial			FK
+	* cost 				numeric			NOT NULL
+	* amount			numeric			NOT NULL
+	* deliveryDate		date			NOT NULL
+	* delivered 		boolean			NOT NULL
+
+tableTops
+	* id 				serial			PK
+	* seats				numeric(1,0)	NOT NULL
+	* accessible		boolean			NULL
+
+orders
+	* id 				serial 			PK
+	* tableTopId		serial			FK
+	* delivered 		boolean			NOT NULL
+	* paidFor			boolean			NOT NULL
+
+orderFoodItems
+	* orderId 			serial			PK, FK
+	* foodItemId 		serial			PK, FK
+	* menuId 			serial			PK, FK
+	* quantity			integer			NOT NULL
+
+SELECT orders.id, sum(mfi.price)
+FROM orders
+WHERE orders.delivered
+LEFT JOIN orderFoodItems AS ofi ON orders.id = ofi.orderId
+LEFT JOIN menuFoodItems AS mfi ON ofi.foodItemId = mfi.foodItemId;
+
+
+##possible other tables##
+equipment
+	* id (PK serial)
+	* name (varchar)
+	* modelNo (numeric or varchar)
+	* purchaseCost (numeric)
+	* age (numeric)
+	* currentValue (numeric)
+	* capacity (numeric)
+
+shipments
+	* id (PK serial)
+	* amount (numeric)
+	* deliveryDate (date)
+	* ingredient (FK ingredientId) one-to-many
+	* delivered (boolean)
+
+ingredientAllergens		(bridge table)
+	* ingredientId (FK ingredientId)
+	* allergenId (FK allergenId)
+
+allergens
+	* id (PK serial)
+	* name (enum or varchar)
+		* WHEAT
+		* TREE NUT
+		* PEANUT
+		* EGG
+		* SOY
+		* SHELLFISH
+		* MILK
+		* FISH
+		* CELERY(?)
+		* LUPIN(?)
+		* MUSTARD(?)
+		* SESAME(?)
+		* SULFURDIOXIDE(?)
+		* SULFATES(?)
+
+
+_________________________________________________
+
+
+*Ingredients
+    ingredientId        serial         PK
+    name                varchar        NOT NULL
+    stock                numeric     NULL
+    organic                boolean        NULL
+    storage?
+    category?
+
+*Menus
+    menuId               serial         PK
+    name                varchar        NOT NULL
+    time of day?
+
+*Recipes
+    recipeId             serial         PK
+    dishId                integer        FK, NOT NULL
+    name                varchar        NOT NULL
+    instructions        text        NOT NULL
+    prep time?
+
+*Dishes
+    dishId                 serial        PK
+    name                varchar     NOT NULL
+
+*Suppliers
+    supplierId            serial        PK
+    name                varchar        NOT NULL
+    location?
+    deliberyTime?
+
+*Tabletops
+    tabletopId            serial        PK
+    seatCount            smallint    NULL?
+    category?
+
+*Orders
+    orderId                serial        PK
+    tabletopId            integer        FK  NOT NULL?
+
+*RecipieIngredients
+    recipeId             integer        PK FK
+    ingredientId        integer     PK FK
+    quantity            numeric        NOT NULL
+    unit                varchar        NOT NULL
+
+*MenuDishes
+    menuId                 integer     PK FK
+    dishId                 integer     PK FK
+    price                numeric        NOT NULL
+
+SupplierIngredients
+    supplierId             integer        PK FK
+    ingredientId        integer        PK FK
+    qtyAvailable        numeric        NULL?
+    units                varchar        NULL?
+    unitCost            numeric        NOT NULL
+
+OrderDishes
+    orderId             integer        PK FK
+    dishId                integer        PK FK
+    menuId                 integer        PK FK
+    quantity            numeric        NOT NULL

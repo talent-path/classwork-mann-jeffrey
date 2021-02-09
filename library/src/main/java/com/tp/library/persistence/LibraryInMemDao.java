@@ -3,14 +3,13 @@ package com.tp.library.persistence;
 import com.tp.library.exceptions.InvalidBookIdException;
 import com.tp.library.exceptions.NullArgumentException;
 import com.tp.library.models.Book;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Repository
+//@Repository
 public class LibraryInMemDao implements LibraryDao {
     //    private Map<Integer, Book> allBooks = new HashMap<>();
     private final List<Book> allBooks = new ArrayList<>();

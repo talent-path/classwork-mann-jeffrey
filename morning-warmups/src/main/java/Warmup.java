@@ -4,12 +4,9 @@ import java.util.stream.Stream;
 
 public class Warmup {
     public static void main(String[] args) {
-        ListNode head = new ListNode(0);
-        head.next = new ListNode(1);
-        head.next.next = new ListNode(2);
-        head.next.next.next = new ListNode(3);
-
-        printList(swapPairs(head));
+//        System.out.println(validTicTacToe(new String[]{"OX ", "   ", "   "}));
+//        System.out.println(validTicTacToe(new String[]{"XOX","O O","XOX"}));
+        System.out.println(validTicTacToe(new String[]{"XO ","XO ","XO "}));
     }
 
     public static boolean noTriples(int[] arr) {
@@ -440,5 +437,68 @@ public class Warmup {
             System.out.print(node.val + " ");
             node = node.next;
         }
+    }
+
+    public static int minDays(int n) {
+        if (n == 1) return 1;
+
+        int minDays = 0;
+
+        while (n > 0) {
+            int minOranges = 1 + Math.min((n%2) + minDays(n/2), (n%3) + minDays(n/3));
+            n = n - minOranges;
+            minDays++;
+        }
+
+        return minDays;
+    }
+
+    public static boolean validTicTacToe(String[] board) {
+        boolean isValid = false;
+        boolean won = false;
+
+        int countX = 0;
+        int countO = 0;
+
+        int totalX = 0;
+        int totalO = 0;
+
+        for (String s : board) {
+            // if all empty squares
+            if (!s.contains("X") && !s.contains("O")) isValid = true;
+            for (char c : s.toCharArray()) {
+                if (c == 'X') countX++;
+                if (c == 'O') countO++;
+            }
+
+            for (int i = 0; i < 3; i++) {
+                if (s.charAt(i) == 'X') won = true;
+                else if (s.charAt(i) == 'O') won = true;
+                else {
+                    won = false;
+                    break;
+                }
+            }
+
+            if (countX == 3) won = true;
+            if (countO == 3) won = true;
+
+            totalX += countX;
+            totalO += countO;
+            countX = 0;
+            countO = 0;
+        }
+        isValid = true;
+        // if more xs or os than squares
+        if (totalX + totalO > 9) isValid = false;
+            // if x or o have taken too many moves
+        else if (totalO > totalX || totalX > totalO + 1) isValid = false;
+
+        if (won) {
+            if (totalX != totalO - 1) isValid = false;
+            else if (totalO != totalX) isValid = false;
+            else isValid = true;
+        }
+        return isValid;
     }
 }

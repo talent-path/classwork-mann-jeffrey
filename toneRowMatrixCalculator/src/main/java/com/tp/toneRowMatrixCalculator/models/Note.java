@@ -1,20 +1,18 @@
 package com.tp.toneRowMatrixCalculator.models;
 
+import java.util.Optional;
+
 public class Note {
     private Integer noteId;
-    private Integer value;
     private Integer orderIndex;
-    private String naturalName;
-    private String flatName;
-    private String sharpName;
-    private boolean accidental;
+    private NoteInfo noteInfo;
 
-    public Integer getValue() {
-        return value;
+    public Integer getNoteId() {
+        return noteId;
     }
 
-    public void setValue(Integer value) {
-        this.value = value;
+    public void setNoteId(Integer noteId) {
+        this.noteId = noteId;
     }
 
     public Integer getOrderIndex() {
@@ -25,46 +23,48 @@ public class Note {
         this.orderIndex = orderIndex;
     }
 
-    public Integer getNoteId() {
-        return noteId;
-    }
-
-    public void setNoteId(Integer noteId) {
-        this.noteId = noteId;
+    public Integer getValue() {
+        return noteInfo.value;
     }
 
     public String getNaturalName() {
-        return naturalName;
-    }
-
-    public void setNaturalName(String naturalName) {
-        this.naturalName = naturalName;
+        return noteInfo.naturalName;
     }
 
     public String getFlatName() {
-        return flatName;
-    }
-
-    public void setFlatName(String flatName) {
-        this.flatName = flatName;
+        return noteInfo.flatName;
     }
 
     public String getSharpName() {
-        return sharpName;
-    }
-
-    public void setSharpName(String sharpName) {
-        this.sharpName = sharpName;
+        return noteInfo.sharpName;
     }
 
     public boolean isAccidental() {
-        return accidental;
+        return noteInfo.accidental;
     }
 
-    public void setAccidental(boolean accidental) {
-        this.accidental = accidental;
+    public NoteInfo getNoteInfo() {
+        return noteInfo;
     }
 
+    public void setNoteInfo(NoteInfo noteInfo) {
+        this.noteInfo = noteInfo;
+    }
 
+    public Note transpose(int transpositionValue) {
+        int thisValue = getValue();
+        NoteInfo transposedInfo = NoteInfo.getByValue(
+                (getValue() + transpositionValue + 12) % 12
+        );
+        Note transposed = new Note();
+        transposed.setNoteId(noteId);
+        transposed.setOrderIndex(orderIndex);
+        transposed.setNoteInfo(transposedInfo);
 
+        return transposed;
+    }
+
+    public int interval(Note comparison) {
+        return comparison.getValue() - getValue();
+    }
 }

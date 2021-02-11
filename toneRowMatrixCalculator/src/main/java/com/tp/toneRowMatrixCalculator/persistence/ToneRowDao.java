@@ -10,5 +10,5 @@ import java.util.Map;
 @Repository
 public interface ToneRowDao {
 
-    List<ToneRow> getAllMatrices();
+    Map<Integer, Matrix> getAllMatrices();
 }

@@ -2,8 +2,10 @@ package com.tp.toneRowMatrixCalculator.persistence;
 
 import com.tp.toneRowMatrixCalculator.models.Matrix;
 import com.tp.toneRowMatrixCalculator.models.Note;
+import com.tp.toneRowMatrixCalculator.models.NoteInfo;
 import com.tp.toneRowMatrixCalculator.models.ToneRow;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -15,14 +17,16 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
+@Profile({"production","daoTesting"})
 public class ToneRowPostgresDao implements ToneRowDao {
     @Autowired
-    JdbcTemplate template;
+    private JdbcTemplate template;
 
     @Override
-    public List<ToneRow> getAllMatrices() {
+    public Map<Integer, Matrix> getAllMatrices() {
         List<ToneRow> toneRowList = template.query(
                 "SELECT \"toneRowId\" FROM \"toneRows\";",
                 new ToneRowMapper());
@@ -32,13 +36,13 @@ public class ToneRowPostgresDao implements ToneRowDao {
         }
 
         //TODO: create generate matrix method on ToneRow
-//        Map<Integer, Matrix> toReturn = new HashMap<>();
-//
-//        for (ToneRow toMap : toneRowList) {
-//            toReturn.put(toMap.getToneRowId(), toMap.generateMatrix());
-//        }
+        Map<Integer, Matrix> toReturn = new HashMap<>();
 
-        return toneRowList;
+        for (ToneRow toMap : toneRowList) {
+            toReturn.put(toMap.getToneRowId(), toMap.generateMatrix());
+        }
+
+        return toReturn;
     }
 
     private void setNoteOrderForToneRow(ToneRow toSet) {
@@ -58,6 +62,7 @@ public class ToneRowPostgresDao implements ToneRowDao {
     }
 
     private class ToneRowMapper implements RowMapper<ToneRow> {
+        @Override
         public ToneRow mapRow(ResultSet resultSet, int i) throws SQLException {
             ToneRow mappedToneRow = new ToneRow();
             mappedToneRow.setToneRowId(resultSet.getInt("toneRowId"));
@@ -70,15 +75,10 @@ public class ToneRowPostgresDao implements ToneRowDao {
         @Override
         public Note mapRow(ResultSet resultSet, int i) throws SQLException {
             Note mappedNote = new Note();
+            NoteInfo mappedInfo = NoteInfo.getByValue(resultSet.getInt("value"));
+
             mappedNote.setNoteId(resultSet.getInt("noteId"));
-            mappedNote.setValue(resultSet.getInt("value"));
-            mappedNote.setAccidental(resultSet.getBoolean("accidental"));
-            if (mappedNote.isAccidental()) {
-                mappedNote.setSharpName(resultSet.getString("sharpName"));
-                mappedNote.setFlatName(resultSet.getString("flatName"));
-            } else {
-                mappedNote.setNaturalName(resultSet.getString("naturalName"));
-            }
+            mappedNote.setNoteInfo(mappedInfo);
             mappedNote.setOrderIndex((resultSet.getInt("noteOrder") - 1) % 12);
 
             return mappedNote;

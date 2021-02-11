@@ -14,7 +14,7 @@ public class MatrixService {
     @Autowired
     ToneRowDao dao;
 
-    public List<ToneRow> getAllMatrices() {
+    public Map<Integer, Matrix> getAllMatrices() {
         return dao.getAllMatrices();
     }
 }

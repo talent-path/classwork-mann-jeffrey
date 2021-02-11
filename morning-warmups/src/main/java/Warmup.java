@@ -4,9 +4,10 @@ import java.util.stream.Stream;
 
 public class Warmup {
     public static void main(String[] args) {
-//        System.out.println(validTicTacToe(new String[]{"OX ", "   ", "   "}));
-//        System.out.println(validTicTacToe(new String[]{"XOX","O O","XOX"}));
-        System.out.println(validTicTacToe(new String[]{"XO ","XO ","XO "}));
+        int[][] grid = {{0, 1, 0, 0}, {1, 1, 1, 0}, {0, 1, 0, 0}, {1, 1, 0, 0}};
+
+//        System.out.println(islandPerimeter(grid));
+        System.out.println(islandPerimeter(new int[][] {{1,1}}));
     }
 
     public static boolean noTriples(int[] arr) {
@@ -369,7 +370,7 @@ public class Warmup {
 //         }
 
 //         return -1;
-        return binarySearch(nums, target, 0, nums.length-1);
+        return binarySearch(nums, target, 0, nums.length - 1);
     }
 
     private int binarySearch(int[] nums, int target, int min, int max) {
@@ -378,8 +379,8 @@ public class Warmup {
         int mid = (min + max) / 2;
 
         if (nums[mid] == target) return mid;
-        else if (nums[mid] < target) return binarySearch(nums, target, mid+1, max);
-        else return binarySearch(nums, target, min, mid-1);
+        else if (nums[mid] < target) return binarySearch(nums, target, mid + 1, max);
+        else return binarySearch(nums, target, min, mid - 1);
     }
 
     public static boolean hasCycle(ListNode head) {
@@ -397,7 +398,7 @@ public class Warmup {
         ListNode one = head;
         ListNode two = head.next;
 
-        while(two != null && two.next != null) {
+        while (two != null && two.next != null) {
             if (one == two) {
                 return true;
             }
@@ -431,8 +432,7 @@ public class Warmup {
         return head;
     }
 
-    public static void printList(ListNode node)
-    {
+    public static void printList(ListNode node) {
         while (node != null) {
             System.out.print(node.val + " ");
             node = node.next;
@@ -445,7 +445,7 @@ public class Warmup {
         int minDays = 0;
 
         while (n > 0) {
-            int minOranges = 1 + Math.min((n%2) + minDays(n/2), (n%3) + minDays(n/3));
+            int minOranges = 1 + Math.min((n % 2) + minDays(n / 2), (n % 3) + minDays(n / 3));
             n = n - minOranges;
             minDays++;
         }
@@ -500,5 +500,80 @@ public class Warmup {
             else isValid = true;
         }
         return isValid;
+    }
+
+    public static int countNodes(TreeNode root) {
+        if (root == null) return 0;
+        if (root.left == null && root.right == null) return 1;
+
+        int count = 0;
+        TreeNode current = getLeftMost(root);
+
+        while (current != null) {
+            count++;
+            current = getNextNode(current, root);
+        }
+
+        return count;
+    }
+
+    private static TreeNode getLeftMost(TreeNode n) {
+        TreeNode temp = n;
+        while (temp.left != null) {
+            temp = temp.left;
+        }
+        return temp;
+    }
+
+    private static TreeNode getNextNode(TreeNode n, TreeNode root) {
+        TreeNode parent = getParent(n, root);
+        if (n.right != null) return getLeftMost(n.right);
+        else {
+            while (parent != null && parent.right.equals(n)) {
+                n = parent;
+            }
+            return parent;
+        }
+
+    }
+
+    private static TreeNode getParent(TreeNode n, TreeNode root) {
+        if (root == null || root.left == null || root.right == null) return null;
+        else if (root.left.equals(n) || root.right.equals(n)) {
+            return root;
+        } else {
+            if (root.val < n.val) {
+                return getParent(n, root.right);
+            } else {
+                return getParent(n, root.left);
+            }
+        }
+    }
+
+    public static int islandPerimeter(int[][] grid) {
+        int perimeter = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+
+                if (grid[i][j] == 1) {
+                    perimeter += 4;
+
+                    if (i - 1 >= 0 && grid[i - 1][j] == 1) {
+                        perimeter -= 1;
+                    }
+                    if (j - 1 >= 0 && grid[i][j - 1] == 1) {
+                        perimeter -= 1;
+                    }
+                    if (i + 1 <= grid.length - 1 && grid[i + 1][j] == 1) {
+                        perimeter -= 1;
+                    }
+                    if (j + 1 <= grid[i].length - 1 && grid[i][j + 1] == 1) {
+                        perimeter -= 1;
+                    }
+                }
+            }
+        }
+
+        return perimeter;
     }
 }

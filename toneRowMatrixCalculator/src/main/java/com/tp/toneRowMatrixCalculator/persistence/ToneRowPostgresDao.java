@@ -7,8 +7,6 @@ import com.tp.toneRowMatrixCalculator.models.ToneRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +15,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
 @Profile({"production","daoTesting"})
@@ -61,7 +58,7 @@ public class ToneRowPostgresDao implements ToneRowDao {
         toSet.setNoteOrder(orderedNotes);
     }
 
-    private class ToneRowMapper implements RowMapper<ToneRow> {
+    private static class ToneRowMapper implements RowMapper<ToneRow> {
         @Override
         public ToneRow mapRow(ResultSet resultSet, int i) throws SQLException {
             ToneRow mappedToneRow = new ToneRow();
@@ -70,7 +67,7 @@ public class ToneRowPostgresDao implements ToneRowDao {
         }
     }
 
-    private class NoteMapper implements RowMapper<Note> {
+    private static class NoteMapper implements RowMapper<Note> {
 
         @Override
         public Note mapRow(ResultSet resultSet, int i) throws SQLException {

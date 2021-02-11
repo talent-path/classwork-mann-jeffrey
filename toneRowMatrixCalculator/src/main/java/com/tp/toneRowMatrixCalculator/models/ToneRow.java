@@ -2,7 +2,6 @@ package com.tp.toneRowMatrixCalculator.models;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class ToneRow {
     public Note[] noteOrder;
@@ -35,25 +34,69 @@ public class ToneRow {
 
     public Matrix generateMatrix() {
         Matrix generated = new Matrix();
-//        generated.setPrimes(generatePrimes());
-//        generated.setInversions(generateInversions());
-//        generated.setRetrogrades(generateRetrogrades());
-//        generated.setRetrogradeInversions(generateRetrogradeInversions());
+        generated.setPrimes(generatePrimes());
+        generated.setInversions(generateInversions());
+        generated.setRetrogrades(generateRetrogrades());
+        generated.setRetrogradeInversions(generateRetrogradeInversions());
         for (int i = 0; i < generated.matrix.length; i++) {
             for (int j = 0; j < generated.matrix[i].length; j++) {
-                generated.matrix[i][j] = i%2==0 ? this.noteOrder[j].getValue() : this.invert().noteOrder[j].getValue();
+                generated.matrix[i][j] = this.noteOrder[j]
+                        .transpose(
+                                this.invert().noteOrder[i].getValue()
+                        ).getValue();
             }
         }
 
         return generated;
-//        throw new UnsupportedOperationException();
     }
 
-//    private Map<String, Note[]> generatePrimes() {
-//        Map<String, Note[]> toReturn = new HashMap<>();
-//
-//        throw new UnsupportedOperationException();
-//    }
+    private Map<String, ToneRow> generateRetrogradeInversions() {
+        Map<String, ToneRow> toReturn = new HashMap<>();
+
+        for (Note n : noteOrder) {
+            ToneRow retrogradeInvertedRow = invert().transpose(n.getValue()).retrograde();
+            String label = "RI" + retrogradeInvertedRow.noteOrder[0].getValue();
+            toReturn.put(label, retrogradeInvertedRow);
+        }
+
+        return toReturn;
+    }
+
+    private Map<String, ToneRow> generateRetrogrades() {
+        Map<String, ToneRow> toReturn = new HashMap<>();
+
+        for (Note n: invert().noteOrder) {
+            ToneRow retrogradeRow = transpose(n.getValue()).retrograde();
+            String label = "R" + retrogradeRow.noteOrder[0].getValue();
+            toReturn.put(label, retrogradeRow);
+        }
+
+        return toReturn;
+    }
+
+    private Map<String, ToneRow> generateInversions() {
+        Map<String, ToneRow> toReturn = new HashMap<>();
+
+        for (Note n: noteOrder) {
+            String label = "I" + n.getValue();
+            ToneRow invertedRow = invert().transpose(n.getValue());
+            toReturn.put(label, invertedRow);
+        }
+
+        return toReturn;
+    }
+
+    private Map<String, ToneRow> generatePrimes() {
+        Map<String, ToneRow> toReturn = new HashMap<>();
+
+        for (Note n : invert().noteOrder) {
+            String label = "P" + n.getValue();
+            ToneRow primeRow = transpose(n.getValue());
+            toReturn.put(label, primeRow);
+        }
+
+        return toReturn;
+    }
 
     private ToneRow transpose(int value) {
         ToneRow toReturn = new ToneRow();
@@ -82,13 +125,13 @@ public class ToneRow {
             int interval = noteOrder[i-1].interval(noteOrder[i]);
 
             // this should not compare to prime row...
-            NoteInfo invertedValue = NoteInfo.getByValue(
+            NoteInfo invertedInfo = NoteInfo.getByValue(
                     invertedNoteOrder[i-1].transpose(-interval).getValue()
             );
 
             inverted.setNoteId(noteOrder[i].getNoteId());
             inverted.setOrderIndex(noteOrder[i].getOrderIndex());
-            inverted.setNoteInfo(invertedValue);
+            inverted.setNoteInfo(invertedInfo);
 
             invertedNoteOrder[i] = inverted;
         }

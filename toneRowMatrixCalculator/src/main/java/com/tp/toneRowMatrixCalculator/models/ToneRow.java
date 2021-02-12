@@ -34,16 +34,19 @@ public class ToneRow {
 
     public Matrix generateMatrix() {
         Matrix generated = new Matrix();
+
         generated.setPrimes(generatePrimes());
         generated.setInversions(generateInversions());
         generated.setRetrogrades(generateRetrogrades());
         generated.setRetrogradeInversions(generateRetrogradeInversions());
+
         for (int i = 0; i < generated.matrix.length; i++) {
             for (int j = 0; j < generated.matrix[i].length; j++) {
                 generated.matrix[i][j] = this.noteOrder[j]
                         .transpose(
-                                this.invert().noteOrder[i].getValue()
-                        ).getValue();
+                                (this.invert().noteOrder[i].getPitchClass()
+                                        - this.noteOrder[0].getPitchClass()) % 12
+                        ).getPitchClass();
             }
         }
 
@@ -54,8 +57,8 @@ public class ToneRow {
         Map<String, ToneRow> toReturn = new HashMap<>();
 
         for (Note n : noteOrder) {
-            ToneRow retrogradeInvertedRow = invert().transpose(n.getValue()).retrograde();
-            String label = "RI" + retrogradeInvertedRow.noteOrder[0].getValue();
+            ToneRow retrogradeInvertedRow = invert().transpose(n.getPitchClass()).retrograde();
+            String label = "RI" + retrogradeInvertedRow.noteOrder[0].getPitchClass();
             toReturn.put(label, retrogradeInvertedRow);
         }
 
@@ -65,9 +68,9 @@ public class ToneRow {
     private Map<String, ToneRow> generateRetrogrades() {
         Map<String, ToneRow> toReturn = new HashMap<>();
 
-        for (Note n: invert().noteOrder) {
-            ToneRow retrogradeRow = transpose(n.getValue()).retrograde();
-            String label = "R" + retrogradeRow.noteOrder[0].getValue();
+        for (Note n : invert().noteOrder) {
+            ToneRow retrogradeRow = transpose(n.getPitchClass()).retrograde();
+            String label = "R" + retrogradeRow.noteOrder[0].getPitchClass();
             toReturn.put(label, retrogradeRow);
         }
 
@@ -77,9 +80,9 @@ public class ToneRow {
     private Map<String, ToneRow> generateInversions() {
         Map<String, ToneRow> toReturn = new HashMap<>();
 
-        for (Note n: noteOrder) {
-            String label = "I" + n.getValue();
-            ToneRow invertedRow = invert().transpose(n.getValue());
+        for (Note n : noteOrder) {
+            String label = "I" + n.getPitchClass();
+            ToneRow invertedRow = invert().transpose(n.getPitchClass());
             toReturn.put(label, invertedRow);
         }
 
@@ -90,8 +93,8 @@ public class ToneRow {
         Map<String, ToneRow> toReturn = new HashMap<>();
 
         for (Note n : invert().noteOrder) {
-            String label = "P" + n.getValue();
-            ToneRow primeRow = transpose(n.getValue());
+            String label = "P" + n.getPitchClass();
+            ToneRow primeRow = transpose(n.getPitchClass());
             toReturn.put(label, primeRow);
         }
 
@@ -122,11 +125,11 @@ public class ToneRow {
         invertedNoteOrder[0] = noteOrder[0];
         for (int i = 1; i < noteOrder.length; i++) {
             Note inverted = new Note();
-            int interval = noteOrder[i-1].interval(noteOrder[i]);
+            int interval = noteOrder[i - 1].interval(noteOrder[i]);
 
             // this should not compare to prime row...
             NoteInfo invertedInfo = NoteInfo.getByValue(
-                    invertedNoteOrder[i-1].transpose(-interval).getValue()
+                    invertedNoteOrder[i - 1].transpose(-interval).getPitchClass()
             );
 
             inverted.setNoteId(noteOrder[i].getNoteId());
@@ -146,10 +149,10 @@ public class ToneRow {
         toReturn.setWorkId(workId);
 
         Note[] retrogradeNoteOrder = new Note[12];
-        for (int i = 0; i < noteOrder.length/2; i++) {
+        for (int i = 0; i < noteOrder.length / 2; i++) {
             Note temp = noteOrder[i];
             retrogradeNoteOrder[i] = noteOrder[noteOrder.length - i - 1];
-            retrogradeNoteOrder[retrogradeNoteOrder.length - i -1] = temp;
+            retrogradeNoteOrder[retrogradeNoteOrder.length - i - 1] = temp;
         }
         toReturn.setNoteOrder(retrogradeNoteOrder);
 

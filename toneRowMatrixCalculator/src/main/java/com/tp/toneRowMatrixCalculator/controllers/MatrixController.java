@@ -6,12 +6,8 @@ import com.tp.toneRowMatrixCalculator.services.MatrixService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,6 +21,30 @@ public class MatrixController {
         Map<Integer, Matrix> toReturn;
         try {
             toReturn = service.getAllMatrices();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @GetMapping(value = "/matrix", params = {"id"})
+    public ResponseEntity getMatrixById(@RequestParam Integer id) {
+        Map<Integer, Matrix> toReturn;
+        try {
+            toReturn = service.getMatrixById(id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @PostMapping("/matrix")
+    public ResponseEntity createToneRow(@RequestBody ToneRowRequest newToneRow) {
+        ToneRow toReturn;
+        Integer[] noteOrder = newToneRow.noteOrder;
+        Integer workId = newToneRow.workId;
+        try {
+            toReturn = service.createToneRow(noteOrder, workId);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

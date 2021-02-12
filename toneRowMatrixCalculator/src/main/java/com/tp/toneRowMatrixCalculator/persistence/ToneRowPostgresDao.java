@@ -4,6 +4,7 @@ import com.tp.toneRowMatrixCalculator.models.Matrix;
 import com.tp.toneRowMatrixCalculator.models.Note;
 import com.tp.toneRowMatrixCalculator.models.NoteInfo;
 import com.tp.toneRowMatrixCalculator.models.ToneRow;
+import com.tp.toneRowMatrixCalculator.persistence.mappers.NoteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +26,7 @@ public class ToneRowPostgresDao implements ToneRowDao {
     @Override
     public Map<Integer, Matrix> getAllMatrices() {
         List<ToneRow> toneRowList = template.query(
-                "SELECT \"toneRowId\" FROM \"toneRows\";",
+                "SELECT \"toneRowId\",\"workId\" FROM \"toneRows\";",
                 new ToneRowMapper());
 
         for (ToneRow toSet : toneRowList) {
@@ -44,9 +45,8 @@ public class ToneRowPostgresDao implements ToneRowDao {
 
     private void setNoteOrderForToneRow(ToneRow toSet) {
         List<Note> noteList = template.query(
-                "SELECT * FROM \"toneRowNotes\" AS \"trn\"\n" +
-                "LEFT JOIN \"notes\" AS \"n\" ON \"trn\".\"noteId\" = \"n\".\"noteId\"\n" +
-                "WHERE \"trn\".\"toneRowId\" = ?;",
+                "SELECT * FROM \"notes\" AS \"n\"\n" +
+                "WHERE \"n\".\"toneRowId\" = ?;",
                 new NoteMapper(),
                 toSet.getToneRowId());
 
@@ -58,27 +58,23 @@ public class ToneRowPostgresDao implements ToneRowDao {
         toSet.setNoteOrder(orderedNotes);
     }
 
+    @Override
+    public ToneRow createToneRow(Integer workId) {
+        return template.queryForObject("INSERT INTO \"toneRows\" (\"workId\") " +
+                        "VALUES (?) RETURNING \"toneRowId\",\"workId\";",
+                new ToneRowMapper(),
+                workId);
+    }
+
     private static class ToneRowMapper implements RowMapper<ToneRow> {
         @Override
         public ToneRow mapRow(ResultSet resultSet, int i) throws SQLException {
             ToneRow mappedToneRow = new ToneRow();
             mappedToneRow.setToneRowId(resultSet.getInt("toneRowId"));
+            mappedToneRow.setWorkId(resultSet.getInt("workId"));
             return mappedToneRow;
         }
     }
 
-    private static class NoteMapper implements RowMapper<Note> {
 
-        @Override
-        public Note mapRow(ResultSet resultSet, int i) throws SQLException {
-            Note mappedNote = new Note();
-            NoteInfo mappedInfo = NoteInfo.getByValue(resultSet.getInt("value"));
-
-            mappedNote.setNoteId(resultSet.getInt("noteId"));
-            mappedNote.setNoteInfo(mappedInfo);
-            mappedNote.setOrderIndex((resultSet.getInt("noteOrder") - 1) % 12);
-
-            return mappedNote;
-        }
-    }
 }

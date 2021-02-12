@@ -1,10 +1,9 @@
 package com.tp.toneRowMatrixCalculator.models;
 
-import java.util.Optional;
-
 public class Note {
     private Integer noteId;
     private Integer orderIndex;
+    private Integer toneRowId;
     private NoteInfo noteInfo;
 
     public Integer getNoteId() {
@@ -23,8 +22,16 @@ public class Note {
         this.orderIndex = orderIndex;
     }
 
-    public Integer getValue() {
-        return noteInfo.value;
+    public Integer getToneRowId() {
+        return toneRowId;
+    }
+
+    public void setToneRowId(Integer toneRowId) {
+        this.toneRowId = toneRowId;
+    }
+
+    public Integer getPitchClass() {
+        return noteInfo.pitchClass;
     }
 
     public String getNaturalName() {
@@ -52,9 +59,9 @@ public class Note {
     }
 
     public Note transpose(int transpositionValue) {
-        int thisValue = getValue();
+        int thisValue = getPitchClass();
         NoteInfo transposedInfo = NoteInfo.getByValue(
-                (getValue() + transpositionValue + 12) % 12
+                (getPitchClass() + transpositionValue + 12) % 12
         );
         Note transposed = new Note();
         transposed.setNoteId(noteId);
@@ -65,6 +72,6 @@ public class Note {
     }
 
     public int interval(Note comparison) {
-        return comparison.getValue() - getValue();
+        return comparison.getPitchClass() - getPitchClass();
     }
 }

@@ -11,4 +11,6 @@ import java.util.Map;
 public interface ToneRowDao {
 
     Map<Integer, Matrix> getAllMatrices();
+
+    ToneRow createToneRow(Integer workId);
 }

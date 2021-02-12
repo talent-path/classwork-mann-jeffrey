@@ -1,7 +1,6 @@
 package com.tp.toneRowMatrixCalculator.models;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public enum NoteInfo {
     C(0, "C", null, null, false),
@@ -17,14 +16,14 @@ public enum NoteInfo {
     A_SHARP(10, null, "A#", "Bb", true),
     B(11, "B", null, null, false);
 
-    int value;
+    int pitchClass;
     String naturalName;
     String sharpName;
     String flatName;
     boolean accidental;
 
-    NoteInfo(int value, String naturalName, String sharpName, String flatName, boolean accidental) {
-        this.value = value;
+    NoteInfo(int pitchClass, String naturalName, String sharpName, String flatName, boolean accidental) {
+        this.pitchClass = pitchClass;
         this.naturalName = naturalName;
         this.sharpName = sharpName;
         this.flatName = flatName;
@@ -32,11 +31,11 @@ public enum NoteInfo {
     }
 
     public static NoteInfo getByValue(int value) {
-        return Arrays.stream(values()).filter((n) -> n.value == value).findFirst().orElse(null);
+        return Arrays.stream(values()).filter((n) -> n.pitchClass == value).findFirst().orElse(null);
     }
 
-    public int getValue() {
-        return value;
+    public int getPitchClass() {
+        return pitchClass;
     }
 
     public String getNaturalName() {

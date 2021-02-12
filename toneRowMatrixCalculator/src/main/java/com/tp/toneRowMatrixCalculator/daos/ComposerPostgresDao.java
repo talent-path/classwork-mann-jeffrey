@@ -1,7 +1,6 @@
-package com.tp.toneRowMatrixCalculator.persistence;
+package com.tp.toneRowMatrixCalculator.daos;
 
 import com.tp.toneRowMatrixCalculator.models.Composer;
-import com.tp.toneRowMatrixCalculator.models.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

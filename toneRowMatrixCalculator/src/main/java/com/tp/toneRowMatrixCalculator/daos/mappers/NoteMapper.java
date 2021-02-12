@@ -1,4 +1,4 @@
-package com.tp.toneRowMatrixCalculator.persistence.mappers;
+package com.tp.toneRowMatrixCalculator.daos.mappers;
 
 import com.tp.toneRowMatrixCalculator.models.Note;
 import com.tp.toneRowMatrixCalculator.models.NoteInfo;

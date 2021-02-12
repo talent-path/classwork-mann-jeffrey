@@ -1,7 +1,7 @@
 package com.tp.toneRowMatrixCalculator.services;
 
 import com.tp.toneRowMatrixCalculator.models.*;
-import com.tp.toneRowMatrixCalculator.persistence.*;
+import com.tp.toneRowMatrixCalculator.daos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -107,6 +107,4 @@ public class MatrixService {
         }
         return toReturn;
     }
-
-
 }

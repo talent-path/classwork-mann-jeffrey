@@ -1,7 +1,7 @@
-package com.tp.toneRowMatrixCalculator.persistence;
+package com.tp.toneRowMatrixCalculator.daos;
 
 import com.tp.toneRowMatrixCalculator.models.Note;
-import com.tp.toneRowMatrixCalculator.persistence.mappers.NoteMapper;
+import com.tp.toneRowMatrixCalculator.daos.mappers.NoteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

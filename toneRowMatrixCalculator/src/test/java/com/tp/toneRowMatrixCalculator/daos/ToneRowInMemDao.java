@@ -1,15 +1,14 @@
-package com.tp.toneRowMatrixCalculator.persistence;
+package com.tp.toneRowMatrixCalculator.daos;
 
 import com.tp.toneRowMatrixCalculator.models.Matrix;
 import com.tp.toneRowMatrixCalculator.models.ToneRow;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Map;
 
 @Repository
-@Profile("daoTesting")
+@Profile("serviceTesting")
 public class ToneRowInMemDao implements ToneRowDao {
 
     @Override

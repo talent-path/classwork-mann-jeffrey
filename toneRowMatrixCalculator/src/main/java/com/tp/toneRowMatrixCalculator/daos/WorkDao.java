@@ -1,4 +1,4 @@
-package com.tp.toneRowMatrixCalculator.persistence;
+package com.tp.toneRowMatrixCalculator.daos;
 
 import com.tp.toneRowMatrixCalculator.models.Work;
 import org.springframework.stereotype.Repository;

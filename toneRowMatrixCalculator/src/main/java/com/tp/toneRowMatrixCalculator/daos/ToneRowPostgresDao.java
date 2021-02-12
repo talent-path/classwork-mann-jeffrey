@@ -1,14 +1,14 @@
-package com.tp.toneRowMatrixCalculator.persistence;
+package com.tp.toneRowMatrixCalculator.daos;
 
 import com.tp.toneRowMatrixCalculator.models.Matrix;
 import com.tp.toneRowMatrixCalculator.models.Note;
-import com.tp.toneRowMatrixCalculator.models.NoteInfo;
 import com.tp.toneRowMatrixCalculator.models.ToneRow;
-import com.tp.toneRowMatrixCalculator.persistence.mappers.NoteMapper;
+import com.tp.toneRowMatrixCalculator.daos.mappers.NoteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Component
 @Profile({"production","daoTesting"})
 public class ToneRowPostgresDao implements ToneRowDao {
     @Autowired
@@ -33,7 +33,6 @@ public class ToneRowPostgresDao implements ToneRowDao {
             setNoteOrderForToneRow(toSet);
         }
 
-        //TODO: create generate matrix method on ToneRow
         Map<Integer, Matrix> toReturn = new HashMap<>();
 
         for (ToneRow toMap : toneRowList) {

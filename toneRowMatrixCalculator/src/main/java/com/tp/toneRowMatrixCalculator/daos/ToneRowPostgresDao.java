@@ -6,9 +6,9 @@ import com.tp.toneRowMatrixCalculator.models.ToneRow;
 import com.tp.toneRowMatrixCalculator.daos.mappers.NoteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
-@Profile({"production","daoTesting"})
+@Repository
+@Profile({"production", "daoTesting"})
 public class ToneRowPostgresDao implements ToneRowDao {
     @Autowired
     private JdbcTemplate template;
@@ -42,10 +42,65 @@ public class ToneRowPostgresDao implements ToneRowDao {
         return toReturn;
     }
 
+    @Override
+    public Map<Integer, ToneRow> getAllToneRows() {
+        List<ToneRow> toneRowList = template.query(
+                "SELECT \"toneRowId\",\"workId\" FROM \"toneRows\";",
+                new ToneRowMapper());
+
+        for (ToneRow toSet : toneRowList) {
+            setNoteOrderForToneRow(toSet);
+        }
+
+        Map<Integer, ToneRow> toReturn = new HashMap<>();
+
+        for (ToneRow toMap : toneRowList) {
+            toReturn.put(toMap.getToneRowId(), toMap);
+        }
+
+        return toReturn;
+    }
+
+    @Override
+    public Matrix getMatrixById(Integer toneRowId) {
+        ToneRow result;
+        try {
+            result = template.queryForObject(
+                    "SELECT \"toneRowId\", \"workId\" FROM \"toneRows\" WHERE \"toneRowId\"=?;",
+                    new ToneRowMapper(),
+                    toneRowId);
+
+            assert result != null;
+            setNoteOrderForToneRow(result);
+
+            return result.generateMatrix();
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public ToneRow getToneRowById(Integer toneRowId) {
+        ToneRow result;
+        try {
+            result = template.queryForObject(
+                    "SELECT \"toneRowId\", \"workId\" FROM \"toneRows\" WHERE \"toneRowId\"=?;",
+                    new ToneRowMapper(),
+                    toneRowId);
+
+            assert result != null;
+            setNoteOrderForToneRow(result);
+
+            return result;
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
     private void setNoteOrderForToneRow(ToneRow toSet) {
         List<Note> noteList = template.query(
                 "SELECT * FROM \"notes\" AS \"n\"\n" +
-                "WHERE \"n\".\"toneRowId\" = ?;",
+                        "WHERE \"n\".\"toneRowId\" = ?;",
                 new NoteMapper(),
                 toSet.getToneRowId());
 
@@ -74,6 +129,5 @@ public class ToneRowPostgresDao implements ToneRowDao {
             return mappedToneRow;
         }
     }
-
 
 }

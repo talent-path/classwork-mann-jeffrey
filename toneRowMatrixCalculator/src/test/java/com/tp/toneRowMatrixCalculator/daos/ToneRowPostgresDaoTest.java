@@ -127,4 +127,9 @@ public class ToneRowPostgresDaoTest {
             assertEquals(returned.get(1).matrix[i][0], inverted_zero.getNoteOrder()[i].getPitchClass());
         }
     }
+
+    @Test
+    public void createToneRowGoldenPathTest() {
+        toTest.createToneRow(1);
+    }
 }

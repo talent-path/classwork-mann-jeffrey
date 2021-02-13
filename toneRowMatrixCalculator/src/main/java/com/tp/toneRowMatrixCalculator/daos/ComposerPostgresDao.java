@@ -2,6 +2,7 @@ package com.tp.toneRowMatrixCalculator.daos;
 
 import com.tp.toneRowMatrixCalculator.models.Composer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -18,7 +19,7 @@ public class ComposerPostgresDao implements ComposerDao {
     @Override
     public Composer createComposer(String composer) {
         return template.queryForObject(
-                "INSERT INTO \"composers\" (\"name\") VALUES (?) RETURNING \"composerId\"",
+                "INSERT INTO \"composers\" (\"name\") VALUES (?) RETURNING \"composerId\", \"name\"",
                 new ComposerMapper(),
                 composer
         );
@@ -26,11 +27,16 @@ public class ComposerPostgresDao implements ComposerDao {
 
     @Override
     public Composer getComposerByName(String composer) {
-        List<Composer> results = template.query(
-                "SELECT \"composerId\" \"name\" FROM \"composers\" co WHERE co.\"name\" = ?;",
-                new ComposerMapper(),
-                composer
-        );
+        List<Composer> results;
+        try {
+            results = template.query(
+                    "SELECT \"composerId\", \"name\" FROM \"composers\" co WHERE co.\"name\" = ?;",
+                    new ComposerMapper(),
+                    composer
+            );
+        } catch (DataAccessException e) {
+            return null;
+        }
 
         if (results.isEmpty()) {
             return null;

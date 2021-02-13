@@ -1,13 +1,12 @@
 package com.tp.toneRowMatrixCalculator.services;
 
+import com.tp.toneRowMatrixCalculator.exceptions.InvalidIdException;
 import com.tp.toneRowMatrixCalculator.models.*;
 import com.tp.toneRowMatrixCalculator.daos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class MatrixService {
@@ -30,9 +29,20 @@ public class MatrixService {
         return toneRowDao.getAllMatrices();
     }
 
-    public Map<Integer, Matrix> getMatrixById(Integer id) {
-        throw new UnsupportedOperationException();
-//        return dao.getMatrixById(id);
+    public Map<Integer, ToneRow> getAllToneRows() {
+        return toneRowDao.getAllToneRows();
+    }
+
+    public Matrix getMatrixById(Integer id) throws InvalidIdException {
+        Matrix toReturn = toneRowDao.getMatrixById(id);
+        if (toReturn == null) throw new InvalidIdException("No Matrix with id: " + id);
+        return toReturn;
+    }
+
+    public ToneRow getToneRowById(Integer id) throws InvalidIdException {
+        ToneRow toReturn = toneRowDao.getToneRowById(id);
+        if (toReturn == null) throw new InvalidIdException("No Matrix with id: " + id);
+        return toReturn;
     }
 
     public ToneRow createToneRow(Integer[] noteOrder, Integer workId) {
@@ -50,21 +60,9 @@ public class MatrixService {
                     )
             );
         }
-
-//        if (composerName == null) {
-//            throw new IllegalArgumentException("Cannot create a Tone Row with a null composer");
-//        }
-//        if (workTitle == null) {
-//            throw new IllegalArgumentException("Cannot create a Tone Row with a null work title");
-//        }
-
-//        Work workForToneRow = createWork(workTitle);
-//
-//        Composer composerForToneRow = createComposer(composerName);
-//
-//        if (!cwDao.exists(workForToneRow.getWorkId(), composerForToneRow.getComposerId())) {
-//            cwDao.createComposerWork(workForToneRow.getWorkId(), composerForToneRow.getComposerId());
-//        }
+        if (hasDuplicates(noteOrder)) {
+            throw new IllegalArgumentException("Cannot create a Tone Row with duplicate notes");
+        }
 
         ToneRow newToneRow = toneRowDao.createToneRow(workId);
 
@@ -78,12 +76,20 @@ public class MatrixService {
         return newToneRow;
     }
 
+    private boolean hasDuplicates(Integer[] noteOrder) {
+        Set<Integer> seen = new HashSet<Integer>();
+        for (Integer i : noteOrder) {
+            if (seen.contains(i)) return true;
+            seen.add(i);
+        }
+        return false;
+    }
+
     private Note[] createNotesOnToneRow(Integer[] noteOrder, Integer toneRowId) {
         Note[] toReturn = new Note[12];
-        for (int i = 0; i < 12; i++) {
-            int pitchClass = noteOrder[i];
-            int orderIndex = i;
-            toReturn[i] = noteDao.createNote(pitchClass, orderIndex, toneRowId);
+        for (int orderIndex = 0; orderIndex < 12; orderIndex++) {
+            int pitchClass = noteOrder[orderIndex];
+            toReturn[orderIndex] = noteDao.createNote(pitchClass, orderIndex, toneRowId);
         }
         return toReturn;
     }
@@ -100,10 +106,10 @@ public class MatrixService {
 
     public Composer createComposer(String composerName) {
         Composer toReturn;
-        if (!composerDao.exists(composerName)) {
-            toReturn = composerDao.createComposer(composerName);
-        } else {
+        if (composerDao.exists(composerName)) {
             toReturn = composerDao.getComposerByName(composerName);
+        } else {
+            toReturn = composerDao.createComposer(composerName);
         }
         return toReturn;
     }

@@ -2,6 +2,8 @@ package com.tp.toneRowMatrixCalculator.daos;
 
 import com.tp.toneRowMatrixCalculator.models.Work;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -18,7 +20,7 @@ public class WorkPostgresDao implements WorkDao{
     @Override
     public Work createWork(String workTitle) {
         return template.queryForObject(
-                "INSERT INTO \"works\" (\"title\") VALUES (?) RETURNING \"workId\"",
+                "INSERT INTO \"works\" (\"title\") VALUES (?) RETURNING \"workId\", \"title\"",
                 new WorkMapper(),
                 workTitle
         );
@@ -26,11 +28,16 @@ public class WorkPostgresDao implements WorkDao{
 
     @Override
     public Work getWorkByTitle(String workTitle) {
-        List<Work> results = template.query(
-                "SELECT \"workId\" \"title\" FROM \"works\" wo WHERE wo.\"title\" = ?;",
-                new WorkMapper(),
-                workTitle
-        );
+        List<Work> results;
+        try {
+            results = template.query(
+                    "SELECT \"workId\", \"title\" FROM \"works\" wo WHERE wo.\"title\" = ?;",
+                    new WorkMapper(),
+                    workTitle
+            );
+        } catch (DataAccessException e) {
+            return null;
+        }
 
         if (results.isEmpty()) {
             return null;

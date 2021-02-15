@@ -4,9 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ToneRow {
-    public Note[] noteOrder;
+    private Note[] noteOrder;
     private Integer toneRowId;
     private Integer workId;
+
+    public ToneRow() { }
+
+    public ToneRow(ToneRow toCopy) {
+        this.noteOrder = toCopy.noteOrder;
+        this.toneRowId = toCopy.toneRowId;
+        this.workId = toCopy.workId;
+    }
 
     public Note[] getNoteOrder() {
         return noteOrder;

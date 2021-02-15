@@ -2,6 +2,7 @@ package com.tp.toneRowMatrixCalculator.daos;
 
 import com.tp.toneRowMatrixCalculator.models.Work;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Profile({"production", "daoTesting"})
 public class WorkPostgresDao implements WorkDao{
     @Autowired
     JdbcTemplate template;

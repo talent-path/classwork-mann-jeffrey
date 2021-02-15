@@ -2,6 +2,7 @@ package com.tp.toneRowMatrixCalculator.daos;
 
 import com.tp.toneRowMatrixCalculator.models.Composer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Profile({"production", "daoTesting"})
 public class ComposerPostgresDao implements ComposerDao {
     @Autowired
     JdbcTemplate template;

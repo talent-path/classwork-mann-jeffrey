@@ -1,15 +1,16 @@
 package com.tp.toneRowMatrixCalculator.services;
 
-import com.tp.toneRowMatrixCalculator.daos.mappers.NoteMapper;
 import com.tp.toneRowMatrixCalculator.exceptions.InvalidIdException;
 import com.tp.toneRowMatrixCalculator.models.*;
 import com.tp.toneRowMatrixCalculator.daos.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Profile({"production", "serviceTesting"})
 public class MatrixService {
     @Autowired
     ToneRowDao toneRowDao;
@@ -23,6 +24,7 @@ public class MatrixService {
     @Autowired
     ComposerDao composerDao;
 
+    // GETs for ToneRows and Matrices
     public Map<Integer, Matrix> getAllMatrices() {
         Map<Integer, ToneRow> allToneRows = getAllToneRows();
 
@@ -48,9 +50,7 @@ public class MatrixService {
         ToneRow toMap = getToneRowById(id);
         if (toMap == null) throw new InvalidIdException("No Matrix with id: " + id);
 
-        Matrix toReturn = toMap.generateMatrix();
-
-        return toReturn;
+        return toMap.generateMatrix();
     }
 
     public ToneRow getToneRowById(Integer id) throws InvalidIdException {
@@ -62,6 +62,7 @@ public class MatrixService {
         return toReturn;
     }
 
+        // helper to set notes on each ToneRow
     private void setNoteOrderForToneRow(ToneRow toSet) {
         List<Note> noteList = noteDao.getNotesForToneRow(toSet.getToneRowId());
 
@@ -73,6 +74,7 @@ public class MatrixService {
         toSet.setNoteOrder(orderedNotes);
     }
 
+    // POST for ToneRows
     public ToneRow createToneRow(Integer[] noteOrder, Integer workId) {
         if (noteOrder == null) {
             throw new IllegalArgumentException("Cannot create a Tone Row with a null set of notes");
@@ -104,6 +106,7 @@ public class MatrixService {
         return newToneRow;
     }
 
+        // helper to prevent duplicate notes on ToneRow
     private boolean hasDuplicates(Integer[] noteOrder) {
         Set<Integer> seen = new HashSet<Integer>();
         for (Integer i : noteOrder) {
@@ -113,6 +116,7 @@ public class MatrixService {
         return false;
     }
 
+        // helper to create notes on each ToneRow
     private Note[] createNotesOnToneRow(Integer[] noteOrder, Integer toneRowId) {
         Note[] toReturn = new Note[12];
         for (int orderIndex = 0; orderIndex < 12; orderIndex++) {
@@ -122,6 +126,32 @@ public class MatrixService {
         return toReturn;
     }
 
+    // GETs for Works and Composers
+    public Map<Integer, Work> getAllWorks() {
+        return workDao.getAllWorks();
+    }
+
+    public Work getWorkByTitle(String title) {
+        return workDao.getWorkByTitle(title);
+    }
+
+    public Work getWorkById(Integer id) {
+        return workDao.getWorkById(id);
+    }
+
+    public Map<Integer, Composer> getAllComposers() {
+        return composerDao.getAllComposers();
+    }
+
+    public Composer getComposerByName(String name) {
+        return composerDao.getComposerByName(name);
+    }
+
+    public Composer getComposerById(Integer id) {
+        return composerDao.getComposerById(id);
+    }
+
+    // POSTs for Works and Composers
     public Work createWork(String workTitle) {
         Work toReturn;
         if (workDao.exists(workTitle)) {
@@ -140,29 +170,5 @@ public class MatrixService {
             toReturn = composerDao.createComposer(composerName);
         }
         return toReturn;
-    }
-
-    public Map<Integer, Work> getAllWorks() {
-        return workDao.getAllWorks();
-    }
-
-    public Work getWorkByTitle(String title) {
-        return workDao.getWorkByTitle(title);
-    }
-
-    public Work getWorkById(Integer id) {
-        return workDao.getWorkById(id);
-    }
-
-    public Map<Integer, Composer> getAllComposers() {
-        return composerDao.getAllComposers();
-    }
-
-    public Composer getComposerById(Integer id) {
-        return composerDao.getComposerById(id);
-    }
-
-    public Composer getComposerByName(String name) {
-        return composerDao.getComposerByName(name);
     }
 }

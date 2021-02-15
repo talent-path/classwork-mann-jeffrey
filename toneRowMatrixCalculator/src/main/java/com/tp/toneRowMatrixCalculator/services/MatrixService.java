@@ -1,5 +1,6 @@
 package com.tp.toneRowMatrixCalculator.services;
 
+import com.tp.toneRowMatrixCalculator.daos.mappers.NoteMapper;
 import com.tp.toneRowMatrixCalculator.exceptions.InvalidIdException;
 import com.tp.toneRowMatrixCalculator.models.*;
 import com.tp.toneRowMatrixCalculator.daos.*;
@@ -23,23 +24,53 @@ public class MatrixService {
     ComposerDao composerDao;
 
     public Map<Integer, Matrix> getAllMatrices() {
-        return toneRowDao.getAllMatrices();
+        Map<Integer, ToneRow> allToneRows = getAllToneRows();
+
+        Map<Integer, Matrix> toReturn = new HashMap<>();
+        for (Integer key : allToneRows.keySet()) {
+            toReturn.put(key, allToneRows.get(key).generateMatrix());
+        }
+
+        return toReturn;
     }
 
     public Map<Integer, ToneRow> getAllToneRows() {
-        return toneRowDao.getAllToneRows();
+        Map<Integer, ToneRow> toReturn = toneRowDao.getAllToneRows();
+
+        for (Integer key : toReturn.keySet()) {
+            setNoteOrderForToneRow(toReturn.get(key));
+        }
+
+        return toReturn;
     }
 
     public Matrix getMatrixById(Integer id) throws InvalidIdException {
-        Matrix toReturn = toneRowDao.getMatrixById(id);
-        if (toReturn == null) throw new InvalidIdException("No Matrix with id: " + id);
+        ToneRow toMap = getToneRowById(id);
+        if (toMap == null) throw new InvalidIdException("No Matrix with id: " + id);
+
+        Matrix toReturn = toMap.generateMatrix();
+
         return toReturn;
     }
 
     public ToneRow getToneRowById(Integer id) throws InvalidIdException {
         ToneRow toReturn = toneRowDao.getToneRowById(id);
         if (toReturn == null) throw new InvalidIdException("No Matrix with id: " + id);
+
+        setNoteOrderForToneRow(toReturn);
+
         return toReturn;
+    }
+
+    private void setNoteOrderForToneRow(ToneRow toSet) {
+        List<Note> noteList = noteDao.getNotesForToneRow(toSet.getToneRowId());
+
+        Note[] orderedNotes = new Note[12];
+        for (Note toOrder : noteList) {
+            orderedNotes[toOrder.getOrderIndex()] = toOrder;
+        }
+
+        toSet.setNoteOrder(orderedNotes);
     }
 
     public ToneRow createToneRow(Integer[] noteOrder, Integer workId) {

@@ -25,64 +25,17 @@ public class ToneRowPostgresDao implements ToneRowDao {
     private JdbcTemplate template;
 
     @Override
-    public Map<Integer, Matrix> getAllMatrices() {
-        List<ToneRow> toneRowList;
-        try {
-            toneRowList = template.query(
-                    "SELECT \"toneRowId\",\"workId\" FROM \"toneRows\";",
-                    new ToneRowMapper());
-        } catch (DataAccessException e) {
-            return null;
-        }
-
-        for (ToneRow toSet : toneRowList) {
-            setNoteOrderForToneRow(toSet);
-        }
-
-        Map<Integer, Matrix> toReturn = new HashMap<>();
-
-        for (ToneRow toMap : toneRowList) {
-            toReturn.put(toMap.getToneRowId(), toMap.generateMatrix());
-        }
-
-        return toReturn;
-    }
-
-    @Override
     public Map<Integer, ToneRow> getAllToneRows() {
         List<ToneRow> toneRowList = template.query(
                 "SELECT \"toneRowId\",\"workId\" FROM \"toneRows\";",
                 new ToneRowMapper());
 
-        for (ToneRow toSet : toneRowList) {
-            setNoteOrderForToneRow(toSet);
-        }
-
         Map<Integer, ToneRow> toReturn = new HashMap<>();
-
         for (ToneRow toMap : toneRowList) {
             toReturn.put(toMap.getToneRowId(), toMap);
         }
 
         return toReturn;
-    }
-
-    @Override
-    public Matrix getMatrixById(Integer toneRowId) {
-        ToneRow result;
-        try {
-            result = template.queryForObject(
-                    "SELECT \"toneRowId\", \"workId\" FROM \"toneRows\" WHERE \"toneRowId\"=?;",
-                    new ToneRowMapper(),
-                    toneRowId);
-
-            assert result != null;
-            setNoteOrderForToneRow(result);
-
-            return result.generateMatrix();
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
     }
 
     @Override
@@ -94,29 +47,12 @@ public class ToneRowPostgresDao implements ToneRowDao {
                     new ToneRowMapper(),
                     toneRowId);
 
-            assert result != null;
-            setNoteOrderForToneRow(result);
-
             return result;
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
-    private void setNoteOrderForToneRow(ToneRow toSet) {
-        List<Note> noteList = template.query(
-                "SELECT * FROM \"notes\" AS \"n\"\n" +
-                        "WHERE \"n\".\"toneRowId\" = ?;",
-                new NoteMapper(),
-                toSet.getToneRowId());
-
-        Note[] orderedNotes = new Note[12];
-        for (Note toOrder : noteList) {
-            orderedNotes[toOrder.getOrderIndex()] = toOrder;
-        }
-
-        toSet.setNoteOrder(orderedNotes);
-    }
 
     @Override
     public ToneRow createToneRow(Integer workId) {

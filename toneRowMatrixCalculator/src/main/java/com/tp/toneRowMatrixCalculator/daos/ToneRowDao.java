@@ -9,11 +9,7 @@ import java.util.Map;
 @Repository
 public interface ToneRowDao {
 
-    Map<Integer, Matrix> getAllMatrices();
-
     Map<Integer, ToneRow> getAllToneRows();
-
-    Matrix getMatrixById(Integer toneRowId);
 
     ToneRow getToneRowById(Integer toneRowId);
 

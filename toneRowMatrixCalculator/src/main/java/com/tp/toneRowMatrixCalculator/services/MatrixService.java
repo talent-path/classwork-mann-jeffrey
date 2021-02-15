@@ -122,4 +122,16 @@ public class MatrixService {
     public Work getWorkById(Integer id) {
         return workDao.getWorkById(id);
     }
+
+    public Map<Integer, Composer> getAllComposers() {
+        return composerDao.getAllComposers();
+    }
+
+    public Composer getComposerById(Integer id) {
+        return composerDao.getComposerById(id);
+    }
+
+    public Composer getComposerByName(String name) {
+        return composerDao.getComposerByName(name);
+    }
 }

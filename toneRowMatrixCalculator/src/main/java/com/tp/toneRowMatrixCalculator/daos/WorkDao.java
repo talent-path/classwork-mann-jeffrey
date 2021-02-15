@@ -9,11 +9,11 @@ import java.util.Map;
 public interface WorkDao {
     Work createWork(String workTitle);
 
-    Work getWorkByTitle(String workTitle);
-
-    boolean exists(String workTitle);
+    Map<Integer, Work> getAllWorks();
 
     Work getWorkById(Integer workId);
 
-    Map<Integer, Work> getAllWorks();
+    Work getWorkByTitle(String workTitle);
+
+    boolean exists(String workTitle);
 }

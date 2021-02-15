@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ComposerPostgresDao implements ComposerDao {
@@ -23,6 +25,48 @@ public class ComposerPostgresDao implements ComposerDao {
                 new ComposerMapper(),
                 composer
         );
+    }
+
+    @Override
+    public Map<Integer, Composer> getAllComposers() {
+        List<Composer> results;
+        try {
+            results = template.query(
+                    "SELECT \"composerId\", \"name\" FROM \"composers\"",
+                    new ComposerMapper()
+            );
+        } catch (DataAccessException e) {
+            return null;
+        }
+
+        Map<Integer, Composer> toReturn = new HashMap<>();
+        for (Composer toMap : results) {
+            toReturn.put(toMap.getComposerId(), toMap);
+        }
+
+        return toReturn;
+    }
+
+    @Override
+    public Composer getComposerById(Integer id) {
+        List<Composer> results;
+        try {
+            results = template.query(
+                    "SELECT \"composerId\", \"name\" FROM \"composers\" co WHERE co.\"composerId\" = ?;",
+                    new ComposerMapper(),
+                    id
+            );
+        } catch (DataAccessException e) {
+            return null;
+        }
+
+        if (results.isEmpty()) {
+            return null;
+        } else if (results.size() == 1) {
+            return results.get(0);
+        } else {
+            return null;
+        }
     }
 
     @Override

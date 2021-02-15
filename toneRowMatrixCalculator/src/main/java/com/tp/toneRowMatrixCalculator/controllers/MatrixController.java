@@ -102,6 +102,39 @@ public class MatrixController {
         return ResponseEntity.ok(toReturn);
     }
 
+    @GetMapping("/composer")
+    public ResponseEntity getAllComposers() {
+        Map<Integer, Composer> toReturn;
+        try {
+            toReturn = service.getAllComposers();
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @GetMapping(value = "/composer", params = {"id"})
+    public ResponseEntity getComposerById(@RequestParam Integer id) {
+        Composer toReturn;
+        try {
+            toReturn = service.getComposerById(id);
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @GetMapping(value = "/composer", params = {"name"})
+    public ResponseEntity getComposerByName(@RequestParam String name) {
+        Composer toReturn;
+        try {
+            toReturn = service.getComposerByName(name);
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
     @PostMapping("/tonerow")
     public ResponseEntity createToneRow(@RequestBody ToneRowRequest newToneRow) {
         ToneRow toReturn;

@@ -29,25 +29,22 @@ public class WorkPostgresDao implements WorkDao{
     }
 
     @Override
-    public Work getWorkByTitle(String workTitle) {
+    public Map<Integer, Work> getAllWorks() {
         List<Work> results;
         try {
             results = template.query(
-                    "SELECT \"workId\", \"title\" FROM \"works\" wo WHERE wo.\"title\" = ?;",
-                    new WorkMapper(),
-                    workTitle
+                    "SELECT \"workId\", \"title\" FROM \"works\";\n",
+                    new WorkMapper()
             );
         } catch (DataAccessException e) {
             return null;
         }
 
-        if (results.isEmpty()) {
-            return null;
-        } else if (results.size() == 1) {
-            return results.get(0);
-        } else {
-            return null;
+        Map<Integer, Work> toReturn = new HashMap<>();
+        for (Work toMap : results) {
+            toReturn.put(toMap.getWorkId(), toMap);
         }
+        return toReturn;
     }
 
     @Override
@@ -73,23 +70,25 @@ public class WorkPostgresDao implements WorkDao{
     }
 
     @Override
-    public Map<Integer, Work> getAllWorks() {
+    public Work getWorkByTitle(String workTitle) {
         List<Work> results;
         try {
             results = template.query(
-                    "SELECT \"workId\", \"title\" FROM \"works\";\n",
-                    new WorkMapper()
+                    "SELECT \"workId\", \"title\" FROM \"works\" wo WHERE wo.\"title\" = ?;",
+                    new WorkMapper(),
+                    workTitle
             );
         } catch (DataAccessException e) {
             return null;
         }
 
-        Map<Integer, Work> toReturn = new HashMap<>();
-        for (Work toMap :
-                results) {
-            toReturn.put(toMap.getWorkId(), toMap);
+        if (results.isEmpty()) {
+            return null;
+        } else if (results.size() == 1) {
+            return results.get(0);
+        } else {
+            return null;
         }
-        return toReturn;
     }
 
     @Override

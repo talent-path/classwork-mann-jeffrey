@@ -4,10 +4,11 @@ import java.util.stream.Stream;
 
 public class Warmup {
     public static void main(String[] args) {
-        int[][] grid = {{0, 1, 0, 0}, {1, 1, 1, 0}, {0, 1, 0, 0}, {1, 1, 0, 0}};
-
-//        System.out.println(islandPerimeter(grid));
-        System.out.println(islandPerimeter(new int[][] {{1,1}}));
+//        System.out.println(canPlaceFlowers(new int[] {1,0,0,0,1}, 1));
+//        System.out.println(canPlaceFlowers(new int[] {1,0,0,0,1}, 2));
+//        System.out.println(canPlaceFlowers(new int[] {1,0,0,0,0,0,1}, 2));
+        System.out.println(canPlaceFlowers(new int[]{0}, 1));
+        System.out.println(canPlaceFlowers(new int[]{0, 0, 0, 0, 1}, 2));
     }
 
     public static boolean noTriples(int[] arr) {
@@ -575,5 +576,55 @@ public class Warmup {
         }
 
         return perimeter;
+    }
+
+    public static boolean canPlaceFlowers(int[] flowerbed, int n) {
+        if (n == 0) return true;
+        boolean planted = false;
+        while (n > 0) {
+            planted = false;
+            for (int i = 0; i < flowerbed.length; i++) {
+                if (flowerbed[i] == 0) {
+                    if (i - 1 >= 0 && i + 1 <= flowerbed.length - 1) {
+                        if (flowerbed[i - 1] == 0 && flowerbed[i + 1] == 0) {
+                            planted = true;
+                            flowerbed[i] = 1;
+                            break;
+                        }
+                    } else if (i < flowerbed.length - 1 && flowerbed[i + 1] == 0) {
+                        planted = true;
+                        flowerbed[i] = 1;
+                        break;
+                    } else if (i > 0 && flowerbed[i - 1] == 0) {
+                        planted = true;
+                        flowerbed[i] = 1;
+                        break;
+                    } else if (i + 1 > flowerbed.length - 1 && i - 1 < 0) {
+                        planted = true;
+                        flowerbed[i] = 1;
+                        break;
+                    }
+                }
+            }
+            n--;
+        }
+        return planted;
+    }
+
+    public static boolean canPlaceFlowersBetter(int[] flowerbed, int n) {
+        int openSpots = 0;
+        for (int i = 0; i < flowerbed.length && openSpots < n; i++) {
+            if (flowerbed[i] == 1) {
+                i++;
+            } else if ((i == 0
+                    || flowerbed[i - 1] == 0)
+                    && (i + 1 == flowerbed.length
+                    || flowerbed[i + 1] == 0)) {
+                i++;
+                openSpots++;
+            }
+
+        }
+        return openSpots >= n;
     }
 }

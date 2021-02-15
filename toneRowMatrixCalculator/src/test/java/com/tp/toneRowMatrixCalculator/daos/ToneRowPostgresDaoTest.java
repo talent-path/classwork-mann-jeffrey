@@ -135,7 +135,6 @@ public class ToneRowPostgresDaoTest {
     }
     
     // getMatrixById()
-
     @Test
     public void getMatrixByIdTest() {
         Matrix returned = toTest.getMatrixById(1);
@@ -224,7 +223,6 @@ public class ToneRowPostgresDaoTest {
     }
     
     // getAllToneRows()
-
     @Test
     public void getAllToneRowsTest() {
         Map<Integer, ToneRow> returned = toTest.getAllToneRows();
@@ -239,14 +237,34 @@ public class ToneRowPostgresDaoTest {
         assertNull(notes[0].getFlatName());
         assertFalse(notes[0].isAccidental());
     }
+    //TODO: more get toneRow tests
     
     // getToneRowById()
+    @Test
+    public void getToneRowByIdTest() {
+        ToneRow returned = toTest.getToneRowById(1);
+        Note[] notes = returned.noteOrder;
+
+        assertNotNull(returned);
+        assertEquals(1, returned.getToneRowId());
+        assertEquals(0, notes[0].getPitchClass());
+        assertEquals("C", notes[0].getNaturalName());
+        assertNull(notes[0].getSharpName());
+        assertNull(notes[0].getFlatName());
+        assertFalse(notes[0].isAccidental());
+    }
+    //TODO: more get toneRow tests
     
     // createToneRow()
-//    @Test
-//    public void createToneRowGoldenPathTest() {
-//        toTest.createToneRow(1);
-//    }
-    
+    @Test
+    public void createToneRowGoldenPathTest() {
+        ToneRow returned = toTest.createToneRow(1);
+
+        assertEquals(2, returned.getToneRowId());
+        assertEquals(1, returned.getWorkId());
+        assertNull(returned.generateMatrix());
+        assertNull(returned.getNoteOrder());
+    }
+    //TODO: more create toneRow tests with bad data/arguments
     
 }

@@ -33,6 +33,8 @@ public class ToneRow {
     }
 
     public Matrix generateMatrix() {
+        if (noteOrder == null) return null;
+
         Matrix generated = new Matrix();
 
         generated.setPrimes(generatePrimes());

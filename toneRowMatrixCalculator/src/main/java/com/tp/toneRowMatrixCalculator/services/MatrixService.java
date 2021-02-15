@@ -22,9 +22,6 @@ public class MatrixService {
     @Autowired
     ComposerDao composerDao;
 
-    @Autowired
-    ComposerWorkDao cwDao;
-
     public Map<Integer, Matrix> getAllMatrices() {
         return toneRowDao.getAllMatrices();
     }
@@ -112,5 +109,17 @@ public class MatrixService {
             toReturn = composerDao.createComposer(composerName);
         }
         return toReturn;
+    }
+
+    public Map<Integer, Work> getAllWorks() {
+        return workDao.getAllWorks();
+    }
+
+    public Work getWorkByTitle(String title) {
+        return workDao.getWorkByTitle(title);
+    }
+
+    public Work getWorkById(Integer id) {
+        return workDao.getWorkById(id);
     }
 }

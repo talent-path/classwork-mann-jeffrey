@@ -6,6 +6,7 @@ import com.tp.toneRowMatrixCalculator.models.ToneRow;
 import com.tp.toneRowMatrixCalculator.daos.mappers.NoteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,9 +26,14 @@ public class ToneRowPostgresDao implements ToneRowDao {
 
     @Override
     public Map<Integer, Matrix> getAllMatrices() {
-        List<ToneRow> toneRowList = template.query(
-                "SELECT \"toneRowId\",\"workId\" FROM \"toneRows\";",
-                new ToneRowMapper());
+        List<ToneRow> toneRowList;
+        try {
+            toneRowList = template.query(
+                    "SELECT \"toneRowId\",\"workId\" FROM \"toneRows\";",
+                    new ToneRowMapper());
+        } catch (DataAccessException e) {
+            return null;
+        }
 
         for (ToneRow toSet : toneRowList) {
             setNoteOrderForToneRow(toSet);

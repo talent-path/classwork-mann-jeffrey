@@ -25,7 +25,7 @@ public class MatrixController {
         Map<Integer, Matrix> toReturn;
         try {
             toReturn = service.getAllMatrices();
-        } catch (Exception e) {
+        } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         return ResponseEntity.ok(toReturn);
@@ -49,7 +49,7 @@ public class MatrixController {
             toReturn = service.getMatrixById(id);
         } catch (InvalidIdException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
+        } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
@@ -63,7 +63,40 @@ public class MatrixController {
             toReturn = service.getToneRowById(id);
         } catch (InvalidIdException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @GetMapping("/work")
+    public ResponseEntity getAllWorks() {
+        Map<Integer, Work> toReturn;
+        try {
+            toReturn = service.getAllWorks();
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @GetMapping(value = "/work", params = {"id"})
+    public ResponseEntity getWorkById(@RequestParam Integer id) {
+        Work toReturn;
+        try {
+            toReturn = service.getWorkById(id);
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @GetMapping(value = "/work", params = {"title"})
+    public ResponseEntity getWorkByTitle(@RequestParam String title) {
+        Work toReturn;
+        try {
+            toReturn = service.getWorkByTitle(title);
+        } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         return ResponseEntity.ok(toReturn);

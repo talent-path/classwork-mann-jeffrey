@@ -41,192 +41,11 @@ public class ToneRowPostgresDaoTest {
                 "('8', '8', '1'), ('9', '9', '1'), ('10', '10', '1'), ('11', '11', '1');");
     }
 
-    // getAllMatrices()
-    @Test
-    public void getAllMatricesTest() {
-        Map<Integer, Matrix> returned = toTest.getAllMatrices();
-        ToneRow prime_zero = returned.get(1).getPrimes().get("P0");
-        
-        assertNotNull(returned.get(1));
-        assertNotNull(prime_zero);
-        assertEquals(1, prime_zero.getToneRowId());
-        assertEquals(0, prime_zero.getNoteOrder()[0].getPitchClass());
-        assertEquals("C", prime_zero.getNoteOrder()[0].getNaturalName());
-        assertNull(prime_zero.getNoteOrder()[0].getSharpName());
-        assertNull(prime_zero.getNoteOrder()[0].getFlatName());
-        assertFalse(prime_zero.getNoteOrder()[0].isAccidental());
-        assertEquals(0, returned.get(1).matrix[0][0]);
-        assertEquals(1, returned.get(1).matrix[0][1]);
-        assertEquals(11, returned.get(1).matrix[1][0]);
-
-        assertNull(returned.get(2));
-    }
-
-    @Test
-    public void getAllMatricesPrimeLabelsMatch() {
-        Map<Integer, Matrix> returned = toTest.getAllMatrices();
-
-        Map<String, ToneRow> primes = returned.get(1).getPrimes();
-
-        for (String key : primes.keySet()) {
-            int keyValue = Integer.parseInt(key.replace("P", ""));
-            int firstPitchClass = primes.get(key).getNoteOrder()[0].getPitchClass();
-            assertEquals(keyValue, firstPitchClass);
-        }
-    }
-
-    @Test
-    public void getAllMatricesInversionLabelsMatch() {
-        Map<Integer, Matrix> returned = toTest.getAllMatrices();
-
-        Map<String, ToneRow> inversions = returned.get(1).getInversions();
-
-        for (String key : inversions.keySet()) {
-            int keyValue = Integer.parseInt(key.replace("I", ""));
-            int firstPitchClass = inversions.get(key).getNoteOrder()[0].getPitchClass();
-            assertEquals(keyValue, firstPitchClass);
-        }
-    }
-
-    @Test
-    public void getAllMatricesRetrogradeLabelsMatch() {
-        Map<Integer, Matrix> returned = toTest.getAllMatrices();
-
-        Map<String, ToneRow> retrogrades = returned.get(1).getRetrogrades();
-
-        for (String key : retrogrades.keySet()) {
-            int keyValue = Integer.parseInt(key.replace("R", ""));
-            int firstPitchClass = retrogrades.get(key).getNoteOrder()[0].getPitchClass();
-            assertEquals(keyValue, firstPitchClass);
-        }
-    }
-
-    @Test
-    public void getAllMatricesRetrogradeInversionLabelsMatch() {
-        Map<Integer, Matrix> returned = toTest.getAllMatrices();
-
-        Map<String, ToneRow> retrogradeInversions = returned.get(1).getRetrogradeInversions();
-
-        for (String key : retrogradeInversions.keySet()) {
-            int keyValue = Integer.parseInt(key.replace("RI", ""));
-            int firstPitchClass = retrogradeInversions.get(key).getNoteOrder()[0].getPitchClass();
-            assertEquals(keyValue, firstPitchClass);
-        }
-    }
-
-    @Test
-    public void getAllMatricesPrimeMatrixMatchesPitchClasses() {
-        Map<Integer, Matrix> returned = toTest.getAllMatrices();
-        ToneRow prime_zero = returned.get(1).getPrimes().get("P0");
-
-        for (int i = 0; i < 12; i++) {
-            assertEquals(returned.get(1).matrix[0][i], prime_zero.getNoteOrder()[i].getPitchClass());
-        }
-    }
-
-    @Test
-    public void getAllMatricesInvertedMatrixMatchesPitchClasses() {
-        Map<Integer, Matrix> returned = toTest.getAllMatrices();
-        ToneRow inverted_zero = returned.get(1).getInversions().get("I0");
-
-        for (int i = 0; i < 12; i++) {
-            assertEquals(returned.get(1).matrix[i][0], inverted_zero.getNoteOrder()[i].getPitchClass());
-        }
-    }
-    
-    // getMatrixById()
-    @Test
-    public void getMatrixByIdTest() {
-        Matrix returned = toTest.getMatrixById(1);
-        ToneRow prime_zero = returned.getPrimes().get("P0");
-
-        assertNotNull(returned);
-        assertNotNull(prime_zero);
-        assertEquals(1, prime_zero.getToneRowId());
-        assertEquals(0, prime_zero.getNoteOrder()[0].getPitchClass());
-        assertEquals("C", prime_zero.getNoteOrder()[0].getNaturalName());
-        assertNull(prime_zero.getNoteOrder()[0].getSharpName());
-        assertNull(prime_zero.getNoteOrder()[0].getFlatName());
-        assertFalse(prime_zero.getNoteOrder()[0].isAccidental());
-    }
-
-    @Test
-    public void getMatrixByIdPrimeLabelsMatch() {
-        Matrix returned = toTest.getMatrixById(1);
-
-        Map<String, ToneRow> primes = returned.getPrimes();
-
-        for (String key : primes.keySet()) {
-            int keyValue = Integer.parseInt(key.replace("P", ""));
-            int firstPitchClass = primes.get(key).getNoteOrder()[0].getPitchClass();
-            assertEquals(keyValue, firstPitchClass);
-        }
-    }
-
-    @Test
-    public void getMatrixByIdInversionLabelsMatch() {
-        Matrix returned = toTest.getMatrixById(1);
-
-        Map<String, ToneRow> inversions = returned.getInversions();
-
-        for (String key : inversions.keySet()) {
-            int keyValue = Integer.parseInt(key.replace("I", ""));
-            int firstPitchClass = inversions.get(key).getNoteOrder()[0].getPitchClass();
-            assertEquals(keyValue, firstPitchClass);
-        }
-    }
-
-    @Test
-    public void getMatrixByIdRetrogradeLabelsMatch() {
-        Matrix returned = toTest.getMatrixById(1);
-
-        Map<String, ToneRow> retrogrades = returned.getRetrogrades();
-
-        for (String key : retrogrades.keySet()) {
-            int keyValue = Integer.parseInt(key.replace("R", ""));
-            int firstPitchClass = retrogrades.get(key).getNoteOrder()[0].getPitchClass();
-            assertEquals(keyValue, firstPitchClass);
-        }
-    }
-
-    @Test
-    public void getMatrixByIdRetrogradeInversionLabelsMatch() {
-        Matrix returned = toTest.getMatrixById(1);
-
-        Map<String, ToneRow> retrogradeInversions = returned.getRetrogradeInversions();
-
-        for (String key : retrogradeInversions.keySet()) {
-            int keyValue = Integer.parseInt(key.replace("RI", ""));
-            int firstPitchClass = retrogradeInversions.get(key).getNoteOrder()[0].getPitchClass();
-            assertEquals(keyValue, firstPitchClass);
-        }
-    }
-
-    @Test
-    public void getMatrixByIdPrimeMatrixMatchesPitchClasses() {
-        Matrix returned = toTest.getMatrixById(1);
-        ToneRow prime_zero = returned.getPrimes().get("P0");
-
-        for (int i = 0; i < 12; i++) {
-            assertEquals(returned.matrix[0][i], prime_zero.getNoteOrder()[i].getPitchClass());
-        }
-    }
-
-    @Test
-    public void getMatrixByIdInvertedMatrixMatchesPitchClasses() {
-        Matrix returned = toTest.getMatrixById(1);
-        ToneRow inverted_zero = returned.getInversions().get("I0");
-
-        for (int i = 0; i < 12; i++) {
-            assertEquals(returned.matrix[i][0], inverted_zero.getNoteOrder()[i].getPitchClass());
-        }
-    }
-    
     // getAllToneRows()
     @Test
     public void getAllToneRowsTest() {
         Map<Integer, ToneRow> returned = toTest.getAllToneRows();
-        Note[] notes = returned.get(1).noteOrder;
+        Note[] notes = returned.get(1).getNoteOrder();
 
         assertNotNull(returned);
         assertEquals(1, returned.size());
@@ -243,7 +62,7 @@ public class ToneRowPostgresDaoTest {
     @Test
     public void getToneRowByIdTest() {
         ToneRow returned = toTest.getToneRowById(1);
-        Note[] notes = returned.noteOrder;
+        Note[] notes = returned.getNoteOrder();
 
         assertNotNull(returned);
         assertEquals(1, returned.getToneRowId());
@@ -266,5 +85,5 @@ public class ToneRowPostgresDaoTest {
         assertNull(returned.getNoteOrder());
     }
     //TODO: more create toneRow tests with bad data/arguments
-    
+
 }

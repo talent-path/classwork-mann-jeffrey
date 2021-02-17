@@ -4,11 +4,12 @@ import java.util.stream.Stream;
 
 public class Warmup {
     public static void main(String[] args) {
-//        System.out.println(canPlaceFlowers(new int[] {1,0,0,0,1}, 1));
-//        System.out.println(canPlaceFlowers(new int[] {1,0,0,0,1}, 2));
-//        System.out.println(canPlaceFlowers(new int[] {1,0,0,0,0,0,1}, 2));
-        System.out.println(canPlaceFlowers(new int[]{0}, 1));
-        System.out.println(canPlaceFlowers(new int[]{0, 0, 0, 0, 1}, 2));
+//        System.out.println(calculate("3+3"));
+//        System.out.println(calculate("3 *   3 "));
+//        System.out.println(calculate("5 -3"));
+//        System.out.println(calculate("6 /3 "));
+
+        System.out.println(advCalculate("(3 + (3+3))"));
     }
 
     public static boolean noTriples(int[] arr) {
@@ -626,5 +627,50 @@ public class Warmup {
 
         }
         return openSpots >= n;
+    }
+
+    public static int advCalculate(String expression) {
+        String trimmed = expression.replace(" ", "");
+        trimmed = trimmed.substring(1, trimmed.length()-1);
+        int firstClosingIdx = trimmed.indexOf(")");
+        int firstOpeningIdx = Integer.MIN_VALUE;
+        for (int i = firstClosingIdx; i >= 0; i--) {
+            if (trimmed.charAt(i) == '(') {
+                firstOpeningIdx = i;
+                break;
+            }
+        }
+
+        int calc = calculate(trimmed.substring(firstOpeningIdx+1, firstClosingIdx));
+        String s = trimmed.substring(0,firstOpeningIdx+1) + calc + trimmed.substring(firstClosingIdx, trimmed.length());
+        return advCalculate(s);
+    }
+
+    public static int calculate(String expression) {
+        int calculation = Integer.MIN_VALUE;
+        if (expression.trim().matches("\\d\\s*[\\+\\*\\-\\/]\\s*\\d")){
+            String trimmed = expression.replace(" ", "");
+            String[] numbers = trimmed.split("[+\\-*/]");
+            String operand = trimmed.substring(numbers[0].length(), numbers[0].length()+1);
+
+            int val1 = Integer.parseInt(numbers[0]);
+            int val2 = Integer.parseInt(numbers[1]);
+
+            switch (operand) {
+                case "+":
+                    calculation = val1 + val2;
+                    break;
+                case "-":
+                    calculation = val1 - val2;
+                    break;
+                case "*":
+                    calculation = val1 * val2;
+                    break;
+                case "/":
+                    calculation = val1 / val2;
+                    break;
+            }
+        }
+        return calculation;
     }
 }

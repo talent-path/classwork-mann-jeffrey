@@ -16,3 +16,12 @@ div {
     height: 100%;
     cursor: pointer;
 }
+
+.animate {
+    animation: flip 0.2s ease-in 0ms 1;
+}
+
+@keyframes flip {
+    from { transform: rotateY(90deg); }
+    to { transform: rotateY(0deg); }
+}

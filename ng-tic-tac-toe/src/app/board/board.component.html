@@ -1,0 +1,27 @@
+<div id="Overlay">
+    {{status < 0 ? "" : status> 0 ? isXTurn ? "O Won!" : "X Won!" : "Draw"}}
+    <br>
+    Would you like to play again?
+    <br>
+    <button (click)="reset()">Reset</button>
+</div>
+
+<div class="play-area">
+    <div id="Scoreboard">
+        X Won: {{xWins}}
+        <br>
+        O Won: {{oWins}}
+        <br>
+        Draws: {{draws}}
+    </div>
+
+    <div id="Board">
+        <div class="board-row" *ngFor="let row of boardState; index as i">
+            <app-square *ngFor="let v of row; index as j;" [class.border-left]="j !== 0" [col]="j" [row]="i" [value]="v"
+                (clickEvent)="handleClickEvent($event)"></app-square>
+        </div>
+    </div>
+</div>
+
+<!-- <div id="WinState">
+</div> -->

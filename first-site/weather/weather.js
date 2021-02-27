@@ -22,7 +22,7 @@ function handleSubmit(e) {
     }
 
     $.getJSON(
-        `https://api.openweathermap.org/data/2.5/weather?units=${unit}&zip=${zip},US&appid=b1035f80353b1f9352549b1928dcdb40`,
+        `https://api.openweathermap.org/data/2.5/weather?units=${unit}&zip=${zip},US&appid=${config.open_weather_api_key}`,
         (data) => {
             console.log(data);
             $("#Report").html(`${data.weather[0].main} in ${data.name}`).css("text-align", "center");

@@ -1,5 +1,5 @@
-const client_id = "f368c31cd69c4ec7b459b4bf6d808590";
-const client_secret = "116ec486fca24e3cac57a1e9902e93b2";
+const client_id = config.spotify_client_id;
+const client_secret = config.spotify_client_secret;
 const encoded = window.btoa(client_id + ":" + client_secret);
 let spotify_access;
 

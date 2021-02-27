@@ -1,9 +1,11 @@
 <div id="Overlay">
-    {{status < 0 ? "" : status> 0 ? isXTurn ? "O Won!" : "X Won!" : "Draw"}}
-    <br>
-    Would you like to play again?
-    <br>
-    <button (click)="reset()">Reset</button>
+    <div class="dialog">
+        {{status < 0 ? "" : status> 0 ? isXTurn ? "O Won!" : "X Won!" : "Draw"}}
+        <br>
+        Would you like to play again?
+        <br>
+        <button (click)="reset()">Reset</button>
+    </div>
 </div>
 
 <div class="play-area">

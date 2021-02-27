@@ -25,6 +25,12 @@
     }
 }
 
+.dialog {
+    padding: 3rem;
+    background-color: #ffffff;
+    box-shadow: 0.5em 0.2em 0.2em #111111;
+}
+
 .play-area {
     display: flex;
     flex-direction: row;

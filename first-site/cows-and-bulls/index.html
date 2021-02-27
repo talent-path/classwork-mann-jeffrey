@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon">
+    <title>Cows and Bulls</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #root {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #Display {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            justify-content: space-evenly;
+            width: 80%;
+            height: min(30%, 8rem);
+        }
+
+        #GuessForm {
+            margin-top: 2%;
+        }
+
+        #UserFeedback {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #Instructions {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        #WinState {
+            width: 80%;
+            text-align: center;
+        }
+
+        #Errors {
+            width: 80%;
+            text-align: center;
+        }
+
+        .buttons {
+            width: 50%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .num-display {
+            width: 20%;
+            border: 2px solid #000000;
+            border-radius: 5%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <div id="UserFeedback">
+            <ul id="Instructions">
+                <li>There is a digit in each of these boxes</li>
+                <li>Make a guess with a four digit number</li>
+                <li>
+                    The color of each box will correspond to the validity of your guess
+                    <ul>
+                        <li>Green means you have the correct value in the correct location</li>
+                        <li>Yellow means you have the correct value but its location is elsewhere</li>
+                        <li>Red means that value is incorrect</li>
+                    </ul>
+                </li>
+            </ul>
+            <div id="WinState"></div>
+            <div id="Errors"></div>
+            <div class="buttons">
+                <button style="margin-top: 1rem; margin-bottom: 1rem;" type="reset" onclick="reset()">
+                    RESET
+                </button>
+                <button style="margin-top: 1rem; margin-bottom: 1rem;" type="button" onclick="newGame()">
+                    NEW GAME
+                </button>
+            </div>
+        </div>
+        <div id="Display"></div>
+        <form id="GuessForm"></form>
+    </div>
+    <script src="./cowsandbulls.js"></script>
+</body>
+
+</html>

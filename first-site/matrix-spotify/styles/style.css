@@ -1,0 +1,26 @@
+th,td {
+    border: 1px solid black;
+    padding: .25rem;
+}
+
+tr:nth-child(2n) {
+    background-color: #dddddd;
+}
+
+thead {
+    background-color: #aaaaaa;
+}
+
+thead > tr > th:first-child {
+    background-color: #ffffff;
+    border: 0;
+}
+
+form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+}
